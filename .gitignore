@@ -2,3 +2,4 @@ tools/cache/
 __pycache__/
 *.zip
 _metadata/
+node_modules/

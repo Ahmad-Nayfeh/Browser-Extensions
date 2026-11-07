@@ -41,6 +41,7 @@ TARGETS = {
         "out": "extensions/09-cookie-dismiss/filters",
         "network": [],          # blocking consent scripts breaks too many sites
         "cosmetic": ["cookies"],
+        "extra": ["extra-cookie-filters.txt"],
     },
 }
 
@@ -274,7 +275,7 @@ def is_cheap_generic(sel):
 def build_cosmetic(lines):
     generic = set()
     specific = {}
-    exceptions_generic = set()
+    exceptions_generic = {}   # selector -> sites that said "don't hide this here"
     exceptions_specific = {}
 
     for raw in lines:
@@ -296,7 +297,7 @@ def build_cosmetic(lines):
             if pos:
                 for d in pos:
                     exceptions_specific.setdefault(d, set()).add(sel)
-                exceptions_generic.add(sel)
+                    exceptions_generic.setdefault(sel, set()).add(d)
             continue
         if not domains:
             generic.add(sel)
@@ -305,17 +306,20 @@ def build_cosmetic(lines):
                 specific.setdefault(d, set()).add(sel)
         # negated-only domain lists ("~a.com##.x") are rare -> skipped
 
-    # generic selectors with any exception would hide content on sites that
-    # explicitly asked not to -> drop them (we cannot "un-hide" per site cheaply)
-    generic -= exceptions_generic
-    cheap = sorted(s for s in generic if is_cheap_generic(s))
+    # A generic selector that some sites excepted can't go into generic.css (CSS
+    # can't skip sites). It goes into a separate list with those sites, and the
+    # extension applies it on every page load except on them.
+    with_exc = sorted(s for s in generic if s in exceptions_generic and is_cheap_generic(s))
+    except_list = [[s, sorted(exceptions_generic[s])] for s in with_exc]
+    plain = generic - set(exceptions_generic)
+    cheap = sorted(s for s in plain if is_cheap_generic(s))
 
     out_specific = {}
     for d, sels in specific.items():
         sels = sels - exceptions_specific.get(d, set())
         if sels:
             out_specific[d] = sorted(sels)
-    return cheap, out_specific, len(generic)
+    return cheap, out_specific, len(generic), except_list
 
 
 def write_css(path, selectors):
@@ -352,13 +356,20 @@ def main():
             if not cfg["network"]:
                 _, gh, _ = build_ruleset(fetch(name, offline), 1)
                 generichide |= gh
-        generic, specific, total_generic = build_cosmetic(cos_lines)
+        # our own additions (common names the official lists don't cover), same syntax
+        for extra in cfg.get("extra", []):
+            with open(os.path.join(ROOT, "tools", extra), encoding="utf-8") as f:
+                cos_lines += f.read().splitlines()
+        generic, specific, total_generic, except_list = build_cosmetic(cos_lines)
         write_css(os.path.join(out, "generic.css"), generic)
         with open(os.path.join(out, "specific.json"), "w") as f:
             json.dump(specific, f, separators=(",", ":"), sort_keys=True)
+        with open(os.path.join(out, "generic-except.json"), "w") as f:
+            json.dump(except_list, f, separators=(",", ":"))
         with open(os.path.join(out, "generichide.json"), "w") as f:
             json.dump(sorted(generichide), f)
-        print(f"  cosmetic: {len(generic)}/{total_generic} generic selectors kept, "
+        print(f"  cosmetic: {len(generic)}/{total_generic} generic selectors in generic.css, "
+              f"{len(except_list)} generic selectors with site exceptions, "
               f"{len(specific)} sites with specific rules, {len(generichide)} generichide sites")
         print(f"  rulesets: {rulesets}  (total rules: {next_id - 1})")
 

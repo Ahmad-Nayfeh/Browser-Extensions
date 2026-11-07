@@ -23,10 +23,16 @@
   ];
   const isGoogleConsent = /^consent\.(google|youtube)\./.test(location.hostname);
 
-  function visible(el) {
-    if (!el) return false;
-    const r = el.getBoundingClientRect();
-    return r.width > 0 && r.height > 0 && getComputedStyle(el).visibility !== "hidden";
+  // Is the banner still waiting for an answer?
+  // Our cookie list may already hide it with CSS – it must still get its "Reject all"
+  // click, or the site keeps the page locked. But a banner the SITE closed (you
+  // answered before) carries display:none / hidden on the element itself: leave it.
+  function stillOpen(el) {
+    if (!el || el.disabled) return false;
+    for (let e = el; e && e !== document.body; e = e.parentElement) {
+      if (e.hidden || e.style.display === "none" || e.style.visibility === "hidden" || e.getAttribute("aria-hidden") === "true") return false;
+    }
+    return true;
   }
 
   function unlockScroll() {
@@ -55,7 +61,7 @@
       if (!document.querySelector(marker)) continue;
       for (const sel of buttons) {
         const b = document.querySelector(sel);
-        if (b && visible(b)) { b.click(); return finish(name); }
+        if (stillOpen(b)) { b.click(); return finish(name); }
       }
     }
   }

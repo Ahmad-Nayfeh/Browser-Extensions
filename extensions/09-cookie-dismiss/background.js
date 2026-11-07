@@ -24,19 +24,26 @@ async function sync() {
   await chrome.scripting.registerContentScripts(scripts);
 }
 
-let specific = null;
+let specific = null, excepted = null, generichide = null;
+const loadJSON = async (p) => (await fetch(chrome.runtime.getURL(p))).json();
 chrome.webNavigation.onCommitted.addListener(async ({ tabId, frameId, url }) => {
   const host = hostOf(url);
   if (!host) return;
   const { off } = await getState();
   if (isOff(host, off)) return;
-  specific ??= await (await fetch(chrome.runtime.getURL("filters/specific.json"))).json();
+  specific ??= await loadJSON("filters/specific.json");
   const parts = host.split(".");
   const sels = [];
   for (let i = 0; i < parts.length - 1; i++) {
     const d = parts.slice(i).join(".");
     if (specific[d]) sels.push(...specific[d]);
     if (specific[parts[i] + ".*"]) sels.push(...specific[parts[i] + ".*"]);
+  }
+  // general rules that some sites asked to skip: apply them everywhere except there
+  excepted ??= await loadJSON("filters/generic-except.json");
+  generichide ??= await loadJSON("filters/generichide.json");
+  if (!isOff(host, generichide)) {
+    for (const [sel, sites] of excepted) if (!isOff(host, sites)) sels.push(sel);
   }
   if (sels.length) {
     chrome.scripting.insertCSS({ target: { tabId, frameIds: [frameId] }, css: sels.map((s) => `${s}{display:none!important}`).join("\n"), origin: "USER" }).catch(() => {});

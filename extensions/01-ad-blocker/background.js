@@ -85,7 +85,7 @@ async function sync() {
 }
 
 // ---------- site-specific element hiding ----------
-let specificCache = null;
+let specificCache = null, exceptCache = null, generichideCache = null;
 async function loadJSON(path) {
   const r = await fetch(chrome.runtime.getURL(path));
   return r.json();
@@ -111,6 +111,12 @@ chrome.webNavigation.onCommitted.addListener(async ({ tabId, frameId, url }) => 
   if (paused || isAllowlisted(host, allowlist)) return;
   specificCache ??= await loadJSON("filters/specific.json");
   const sels = selectorsFor(host, specificCache, userFilters);
+  // general rules that some sites asked to skip: apply them everywhere except there
+  exceptCache ??= await loadJSON("filters/generic-except.json");
+  generichideCache ??= await loadJSON("filters/generichide.json");
+  if (!generichideCache.some((d) => hostMatches(host, d))) {
+    for (const [sel, sites] of exceptCache) if (!sites.some((d) => hostMatches(host, d))) sels.push(sel);
+  }
   if (!sels.length) return;
   // one rule per selector: an invalid selector then only breaks itself
   const css = sels.map((s) => `${s}{display:none!important}`).join("\n");

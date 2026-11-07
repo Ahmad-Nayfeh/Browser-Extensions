@@ -1,0 +1,33 @@
+! Our own additions to the EasyList Cookie List (same syntax).
+! The official list mostly names banners per site; these are the common generic
+! names many sites use. Only id/class names – the browser checks them at no cost.
+##.cookie-banner
+###cookie-banner
+##.cookies-banner
+###cookies-banner
+##.cookie-consent
+###cookie-consent
+##.cookieConsent
+###cookieConsent
+##.cookie-notice
+###cookie-notice
+###cookieNotice
+##.cookie-bar
+###cookie-bar
+##.cookiebar
+###cookiebar
+###cookie-law-info-bar
+##.cookie-popup
+###cookiePopup
+##.cookie-message
+###cookie-message
+##.cookie-alert
+##.cookie-modal
+##.cookie-overlay
+##.js-cookie-consent
+##.cc-window
+##.cc-banner
+##.gdpr-banner
+###gdpr-banner
+##.consent-banner
+###consent-banner
