@@ -3,20 +3,25 @@
 // on the player only - no polling, no page-wide observers.
 (() => {
   const watched = new WeakSet();
-  let mutedByUs = false;
+  let mutedByUs = false, rateBefore = null, adSince = 0;
+  // diagnostics go to inject.js (page world), which writes them to the console
+  const log = (msg) => document.dispatchEvent(new CustomEvent("shield-log", { detail: msg }));
 
   function handle(player) {
     const video = player.querySelector("video");
     if (!video) return;
     const ad = player.classList.contains("ad-showing") || player.classList.contains("ad-interrupting");
     if (ad) {
+      if (!adSince) { adSince = performance.now(); log("an ad started anyway – skipping it (fallback)"); }
       if (!video.muted) { video.muted = true; mutedByUs = true; }
+      if (rateBefore === null) rateBefore = video.playbackRate;
       if (Number.isFinite(video.duration) && video.duration > 0) video.currentTime = video.duration;
       try { video.playbackRate = 16; } catch {}
       for (const b of player.querySelectorAll(".ytp-skip-ad-button, .ytp-ad-skip-button, .ytp-ad-skip-button-modern")) b.click();
-    } else if (mutedByUs) {
-      video.muted = false;
-      mutedByUs = false;
+    } else {
+      if (adSince) { log(`ad gone after ${Math.round(performance.now() - adSince)}ms`); adSince = 0; }
+      if (mutedByUs) { video.muted = false; mutedByUs = false; }
+      if (rateBefore !== null) { try { video.playbackRate = rateBefore; } catch {} rateBefore = null; } // back to your speed
     }
   }
 

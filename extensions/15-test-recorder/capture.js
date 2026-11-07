@@ -151,7 +151,9 @@
   // messages from hook-main.js (page world)
   function onPageEvent(e) {
     let ev; try { ev = JSON.parse(e.detail); } catch { return; }
-    if (ev.type === "console" && (ev.level === "log" || ev.level === "info") && !opts.logs) return;
+    // log/info are skipped unless asked for – except Shield's "[Shield]" diagnostics,
+    // which are always useful when a page with ads behaves oddly
+    if (ev.type === "console" && (ev.level === "log" || ev.level === "info") && !opts.logs && !String(ev.text).startsWith("[Shield]")) return;
     send(ev);
   }
 
