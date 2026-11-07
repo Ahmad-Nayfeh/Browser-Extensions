@@ -1,0 +1,12 @@
+{
+  "name": "browser-extensions-tests",
+  "private": true,
+  "description": "Automated tests for the extensions in this repository",
+  "scripts": {
+    "test": "node run.js",
+    "test:all": "node run.js --real"
+  },
+  "devDependencies": {
+    "playwright": "1.63.0"
+  }
+}

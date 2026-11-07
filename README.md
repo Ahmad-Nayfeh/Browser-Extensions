@@ -1,5 +1,7 @@
 # إضافات Chrome الخاصة بي
 
+[![Tests](https://github.com/Ahmad-Nayfeh/Browser-Extensions/actions/workflows/tests.yml/badge.svg)](https://github.com/Ahmad-Nayfeh/Browser-Extensions/actions/workflows/tests.yml)
+
 16 إضافة لمتصفح Chrome، مصنوعة من الصفر: بدون مكتبات خارجية، وبدون حسابات، وكل بياناتك تبقى على جهازك.
 
 | # | الإضافة | ماذا تفعل |
@@ -82,6 +84,11 @@ python3 tools/build_filters.py
 - الحظر يتم بمحرك Chrome نفسه (`declarativeNetRequest`)، والإخفاء بـ CSS يطبقه المتصفح.
 - الأكواد الثقيلة (المحررات، أداة الرسم، المحوّلات) **لا تُحمَّل إلا عند استخدامها**.
 - Shield يقلل الحمل فعلاً: في اختبار حقيقي نزلت طلبات صفحة The Verge من 725 إلى 187، وصفحة Speedtest من 1361 إلى 42.
+
+---
+
+## الاختبارات التلقائية
+كل إضافة لها اختبارات تعمل وحدها على GitHub في كل تحديث، والشارة أعلى هذه الصفحة تُظهر النتيجة (✅ أو ❌). التفاصيل في [`tests/README.md`](tests/README.md).
 
 ---
 

@@ -1,0 +1,36 @@
+name: Tests
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      real:
+        description: "Also test on real websites"
+        type: boolean
+        default: true
+  schedule:
+    - cron: "17 3 * * 1" # every Monday: real websites change, catch it early
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: tests/package-lock.json
+
+      - name: Install test tools
+        working-directory: tests
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+
+      - name: Run tests
+        # xvfb-run gives Chromium a virtual screen (needed by the screen-recorder tests)
+        run: xvfb-run -a -s "-screen 0 1280x800x24" node tests/run.js ${{ (github.event_name == 'schedule' || inputs.real) && '--real' || '' }}

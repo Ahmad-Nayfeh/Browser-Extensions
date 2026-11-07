@@ -34,13 +34,25 @@ chrome.tabs.onCreated.addListener(serial(async (tab) => {
   await setPending([...(await pending()), tab.id]);
 }));
 
+// A tab can report "loaded" twice: first a short-lived page, then the real one
+// (redirects do this). The question shown on the first one disappears with it,
+// so for a few seconds after asking we show it again if the bar is gone.
+const ASK_AGAIN_MS = 10000;
 async function maybeAsk(tab) {
   if (!tab || !tab.active || !isWeb(tab.url) || tab.status !== "complete") return;
   const list = await pending();
-  if (!list.includes(tab.id)) return;
-  await setPending(list.filter((id) => id !== tab.id));
-  if ((await getReasons())[tab.id]) return;
-  show(tab.id, { mode: "ask" });
+  const { asked = {} } = await chrome.storage.session.get("asked");
+  if (list.includes(tab.id)) {
+    await setPending(list.filter((id) => id !== tab.id));
+    if ((await getReasons())[tab.id]) return;
+    asked[tab.id] = Date.now();
+    await chrome.storage.session.set({ asked });
+    return show(tab.id, { mode: "ask" });
+  }
+  if (asked[tab.id] && Date.now() - asked[tab.id] < ASK_AGAIN_MS && !(await getReasons())[tab.id]) {
+    const [r] = await chrome.scripting.executeScript({ target: { tabId: tab.id }, func: () => !!document.querySelector("why-bar") }).catch(() => [{ result: true }]);
+    if (!r.result) show(tab.id, { mode: "ask" });
+  }
 }
 
 // ---------- reminding ----------
