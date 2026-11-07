@@ -2,16 +2,48 @@
   "manifest_version": 3,
   "name": "Night – Lightweight Dark Mode",
   "version": "1.0.0",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArMWJNyiIB20Ch6AMnMpeb/iBe6z9MfWUl16FbeAYpTDIsxmYL/p1l7+WGSS1yfG/llTW9bkQtsYQoLbgpziDWrM1lx9FTGZiS+hw7uIhbD7XCPoN56fkRUZ9e4SxIrLvMWZLL5jW5frXAGU9vegTiBGT0PdbJFbtZShmKL4EnXt805AjRhkpNTU9r9/FGVrmEMgFz+A3jX9uSK93vd+9QOfKzvc582lgdvqtFlKW3P0QzjfuVe4ejhvhHQ7HbiKYfPbBIvP1Z4VCKctSrvXLQX9wCfWc0/KsxnmC5KU0FWfGk1TH7FGNjiXAapf/KMUU73+y4Cnndh1oletj5kYQYQIDAQAB",
   "description": "Dark mode for every website using a single GPU filter – no page analysis, so it stays fast. Skips sites that are already dark.",
-  "permissions": ["storage"],
-  "content_scripts": [{
-    "matches": ["<all_urls>"],
-    "js": ["content.js"],
-    "css": ["dark.css"],
-    "run_at": "document_start"
-  }],
-  "commands": { "toggle-site": { "suggested_key": { "default": "Alt+Shift+D" }, "description": "Toggle dark mode on this site" } },
-  "background": { "service_worker": "background.js" },
-  "action": { "default_popup": "popup/popup.html", "default_icon": { "16": "icons/16.png", "32": "icons/32.png", "48": "icons/48.png" } },
-  "icons": { "16": "icons/16.png", "32": "icons/32.png", "48": "icons/48.png", "128": "icons/128.png" }
+  "permissions": [
+    "storage"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "css": [
+        "dark.css"
+      ],
+      "run_at": "document_start"
+    }
+  ],
+  "commands": {
+    "toggle-site": {
+      "suggested_key": {
+        "default": "Alt+Shift+D"
+      },
+      "description": "Toggle dark mode on this site"
+    }
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "icons/16.png",
+      "32": "icons/32.png",
+      "48": "icons/48.png"
+    }
+  },
+  "icons": {
+    "16": "icons/16.png",
+    "32": "icons/32.png",
+    "48": "icons/48.png",
+    "128": "icons/128.png"
+  }
 }

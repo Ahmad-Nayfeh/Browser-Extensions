@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Lexi – Review</title><link rel="stylesheet" href="../ui.css">
+<style>
+  .card-big { text-align: center; padding: 34px 20px; }
+  .word { font-size: 34px; font-weight: 800; }
+  .ctx { margin: 14px auto 0; max-width: 560px; color: var(--muted); font-style: italic; }
+  .ctx mark { background: none; color: var(--accent); font-weight: 700; font-style: normal; }
+  .ar { font-size: 26px; font-weight: 700; direction: rtl; margin-top: 18px; }
+  .more { direction: rtl; margin-top: 6px; }
+  .def { margin-top: 12px; text-align: left; max-width: 560px; margin-left: auto; margin-right: auto; }
+  .grades { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 22px; }
+  .grades button { padding: 10px; }
+  .grades small { display: block; color: var(--muted); font-size: 11px; }
+  .tabs button.on { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+  td, th { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  table { width: 100%; border-collapse: collapse; }
+</style></head>
+<body class="page stack">
+  <div class="row"><h1>Lexi</h1><span class="tabs"><button data-v="review" class="on">Review</button> <button data-v="list">All words</button></span></div>
+
+  <section id="review">
+    <div class="card card-big" id="cardBox">
+      <div class="muted small" id="left"></div>
+      <div class="word" id="word"></div>
+      <div class="muted" id="ph"></div>
+      <div class="ctx" id="ctx"></div>
+      <div id="answer" hidden>
+        <div class="ar" id="ar"></div>
+        <div class="more small" id="more"></div>
+        <div class="def small" id="def"></div>
+      </div>
+      <div style="margin-top:22px"><button class="primary" id="showBtn">Show meaning <kbd>Space</kbd></button> <button id="sayBtn">🔊</button></div>
+      <div class="grades" id="grades" hidden>
+        <button data-g="again">Again <small>forgot · <kbd>1</kbd></small></button>
+        <button data-g="hard">Hard <small>sooner · <kbd>2</kbd></small></button>
+        <button data-g="good" class="primary">Good <small>next level · <kbd>3</kbd></small></button>
+        <button data-g="easy">Easy <small>skip a level · <kbd>4</kbd></small></button>
+      </div>
+    </div>
+    <p class="muted small">How it works: every word sits in a "box". Good moves it to the next box, and each box waits longer before asking again (10 min → 1 day → 3 → 7 → 14 → 30 → 60 → 120 days). Again sends it back to the start. Words you know well come back rarely; hard words come back often.</p>
+  </section>
+
+  <section id="list" hidden class="stack">
+    <div class="row"><input type="text" id="q" placeholder="Search…" style="max-width:300px"><span><button id="csv">Export CSV (Anki/Excel)</button></span></div>
+    <table><thead><tr><th>Word</th><th>Arabic</th><th>Level</th><th>Next review</th><th></th></tr></thead><tbody id="rows"></tbody></table>
+  </section>
+  <script src="../srs.js"></script>
+  <script src="review.js"></script>
+</body>
+</html>

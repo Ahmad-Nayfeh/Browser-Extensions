@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><link rel="stylesheet" href="../ui.css"></head>
+<body class="popup stack">
+  <div class="row"><h1>Lexi</h1><span class="muted small" id="total"></span></div>
+  <div class="card row">
+    <div><div class="big" id="due">0</div><div class="muted small">words to review now</div></div>
+    <button class="primary" id="review">Start review</button>
+  </div>
+  <h2>Recent words</h2>
+  <ul class="list" id="recent"></ul>
+  <button class="wide" id="all">All words</button>
+  <h2>Settings</h2>
+  <div class="card stack">
+    <div class="row"><span>Show meaning on</span>
+      <select id="trigger" style="width:auto"><option value="dblclick">Double-click</option><option value="alt">Alt + double-click</option></select></div>
+    <label class="row"><span>English definition &amp; example</span><input type="checkbox" id="definitions"></label>
+    <label class="row"><span>Use Google Translate if Chrome's translator is missing</span><input type="checkbox" id="online"></label>
+    <label class="row"><span>Pronounce automatically</span><input type="checkbox" id="speak"></label>
+  </div>
+  <script src="../srs.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

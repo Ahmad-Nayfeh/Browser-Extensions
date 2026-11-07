@@ -2,11 +2,32 @@
   "manifest_version": 3,
   "name": "Restyle – Your CSS for Any Site",
   "version": "1.0.0",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAi0P4tXKHqIH9V0kbNfdF7mdBO1z69FkBNDCXTZpxGxIWL8SlgJoaubAw6Po6qdnXw2LudNMz67QoRO/RRVlBI5UNaHiiK1oqrznDKLFFoo1QQuvqT8aLJniGSntAZSfw93bEbytR30Hpo0xjMyqg4qAfA1CKH+wJJU7WUU6+QmVsaqDP8nZo5+tyBpkfkO0vcYqBo5WPc3j1hGvBOMCxsRwpeJtVyvKuj7wRuSU5luHdSM9lOAKhEFEigZL3piunnyGwSmUZhJUGrrnbx8fHR9zmEA1qvc5QTUpOmmGHMdJNJ9FvpM+/gLduDfr8ijwZh9BwrwLfNQZGzUASRajo/QIDAQAB",
   "description": "Write your own CSS for any website (hide parts, change fonts, widen pages). Applied automatically on every visit.",
-  "permissions": ["storage", "scripting", "webNavigation"],
-  "host_permissions": ["<all_urls>"],
-  "background": { "service_worker": "background.js" },
-  "action": { "default_popup": "popup/popup.html", "default_icon": { "16": "icons/16.png", "32": "icons/32.png", "48": "icons/48.png" } },
+  "permissions": [
+    "storage",
+    "scripting",
+    "webNavigation"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "icons/16.png",
+      "32": "icons/32.png",
+      "48": "icons/48.png"
+    }
+  },
   "options_page": "options/options.html",
-  "icons": { "16": "icons/16.png", "32": "icons/32.png", "48": "icons/48.png", "128": "icons/128.png" }
+  "icons": {
+    "16": "icons/16.png",
+    "32": "icons/32.png",
+    "48": "icons/48.png",
+    "128": "icons/128.png"
+  }
 }

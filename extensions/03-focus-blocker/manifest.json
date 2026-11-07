@@ -2,12 +2,44 @@
   "manifest_version": 3,
   "name": "Focus – Site Blocker & Daily Limits",
   "version": "1.0.0",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA3KoomBtu5r+XSq7gPA4jlAa/c/te4YfitWCJY3kM91cJkAed7R711FJ+zjTbHpKlUGvZdSC1GOKp6nlPZMV++bhQWTCZfdfrg7JzfmIJlHQ/QkOpsmaB4DLboRD01IsNnk2SlTLODrBkjoytRmaMQz0/lblUBZLS8+6hhIvOKpO1/d6lVfeMinnmwhSgNFn9ZETYT79s3OACGQfWoauSyNv0/epDn6SqCHrZ/xSQWhXdOrAuKZtEX45XxSjXfQyL3+Kt2mm/0qyBUfLfsQQbtl7el9gf2RIwxiVyoYx9G5LVYUQnaeBXmrDlwqouf3J2rMsxO6BM+uoqNI6X7fAUpQIDAQAB",
   "description": "Block distracting sites completely, or give them a daily time budget. Time is only counted while the site is actually in front of you.",
   "minimum_chrome_version": "121",
-  "permissions": ["declarativeNetRequest", "storage", "tabs", "alarms", "idle"],
-  "host_permissions": ["<all_urls>"],
-  "background": { "service_worker": "background.js" },
-  "web_accessible_resources": [{ "resources": ["blocked/blocked.html"], "matches": ["<all_urls>"] }],
-  "action": { "default_popup": "popup/popup.html", "default_icon": { "16": "icons/16.png", "32": "icons/32.png", "48": "icons/48.png" } },
-  "icons": { "16": "icons/16.png", "32": "icons/32.png", "48": "icons/48.png", "128": "icons/128.png" }
+  "permissions": [
+    "declarativeNetRequest",
+    "storage",
+    "tabs",
+    "alarms",
+    "idle"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "blocked/blocked.html"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
+    }
+  ],
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "icons/16.png",
+      "32": "icons/32.png",
+      "48": "icons/48.png"
+    }
+  },
+  "icons": {
+    "16": "icons/16.png",
+    "32": "icons/32.png",
+    "48": "icons/48.png",
+    "128": "icons/128.png"
+  }
 }

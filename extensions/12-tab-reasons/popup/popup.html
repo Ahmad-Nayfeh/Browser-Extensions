@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><link rel="stylesheet" href="../ui.css">
+<style>
+  body.popup { width: 380px; }
+  .tab { display: grid; grid-template-columns: 16px 1fr auto; gap: 8px; align-items: start; padding: 7px 0; border-bottom: 1px solid var(--line); cursor: pointer; }
+  .tab:last-child { border-bottom: 0; }
+  .tab img { width: 16px; height: 16px; margin-top: 2px; }
+  .tab .r { font-weight: 600; }
+  .tab .ti { color: var(--muted); font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 280px; }
+  .tab button { border: 0; background: none; color: var(--muted); padding: 2px 6px; }
+  #list { max-height: 260px; overflow: auto; }
+</style></head>
+<body class="popup stack">
+  <h1>Why?</h1>
+  <div class="card stack">
+    <div class="muted small">Why is <b>this tab</b> open?</div>
+    <div class="row"><input type="text" id="reason" placeholder="a few words… (Enter to save)" maxlength="120"><button class="primary" id="save">Save</button></div>
+  </div>
+  <div class="row"><h2 style="margin:6px 0">Open tabs with a reason</h2><span class="muted small" id="none"></span></div>
+  <div id="list"></div>
+  <h2>Settings</h2>
+  <div class="card stack">
+    <div class="row"><span>Ask when I open a tab</span>
+      <select id="ask" style="width:auto"><option value="always">Always</option><option value="many">When many tabs are open</option><option value="never">Never</option></select></div>
+    <div class="row" id="manyRow"><span>“Many” means more than</span><span><input type="number" id="many" min="1" max="100"> tabs</span></div>
+    <div class="row"><span>Remind me when I return after</span><span><input type="number" id="remindMin" min="1" max="1440"> min</span></div>
+    <div class="muted small">Shortcut: <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>W</kbd> – write why the current tab is open</div>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>

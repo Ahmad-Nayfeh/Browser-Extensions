@@ -2,11 +2,32 @@
   "manifest_version": 3,
   "name": "No Cookies – Banner Remover",
   "version": "1.0.0",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAz6mvWdN59CghLALrxHgT6picGW/eG5TL72uC8YFMODu2NwImJJL9JwdFCQwNBAYMDf1T8P8pkupDPeD73PhXIm/GsfKMsTNWPJUcp2drcwfAwT87IRc7wA6zeRphkSzA9QlVAbbMd1UmskxOiDc26kXlh9WBZYAH8ZTS33OLU8YQgZRpGVbqHlFuzRcZuq1jGlLiJ6lwiWsUldqRoQRTnsfgy2WXIXbZD6CfQrCtzEagBZI2M+hpZbkBcVfnSDIXA6kI7FKTJ+7/ajDqqENvF5zHO8OWyj16zsrM1aKBLjeWrlge2tDnUAxxGyYgkH+5tgAM6suI6lhe410ltdik2QIDAQAB",
   "description": "Automatically clicks \"Reject all\" on cookie pop-ups where possible, and hides the rest. Unlocks scrolling the banners block.",
   "minimum_chrome_version": "121",
-  "permissions": ["storage", "scripting", "webNavigation"],
-  "host_permissions": ["<all_urls>"],
-  "background": { "service_worker": "background.js" },
-  "action": { "default_popup": "popup/popup.html", "default_icon": { "16": "icons/16.png", "32": "icons/32.png", "48": "icons/48.png" } },
-  "icons": { "16": "icons/16.png", "32": "icons/32.png", "48": "icons/48.png", "128": "icons/128.png" }
+  "permissions": [
+    "storage",
+    "scripting",
+    "webNavigation"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "icons/16.png",
+      "32": "icons/32.png",
+      "48": "icons/48.png"
+    }
+  },
+  "icons": {
+    "16": "icons/16.png",
+    "32": "icons/32.png",
+    "48": "icons/48.png",
+    "128": "icons/128.png"
+  }
 }

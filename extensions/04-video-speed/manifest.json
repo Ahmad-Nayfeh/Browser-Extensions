@@ -2,15 +2,36 @@
   "manifest_version": 3,
   "name": "Speedy – Video Speed Controller",
   "version": "1.0.0",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApLNMekmjz/XA2jYhDVRm6dg3NydCkzdv2Rfk3Nk9bkFzfOyrSYrwVGM8bLeTgM2LYTNNKs5v14AxRS80XA06u90a/CnadmyXzdhwQyveXo4+2pqXfKaE/ZbVR5iqILBji8iE83i0YsaQpGYx+NJ9ehrZY9NIwe58O4yFg0iiqvGPNlPhz3cE3XLND36TXjsElui4i+csSPdG3A3rwhS86So9LJktlfiwVTa3PkDoxQ+xKjWXAE0C33J3fSkEZ+dbFznFmKiGF7jpTFjkROfmXTjW5l2ETiiEZJkW6masrlUfwOnI3zn3xZz0L4boJTJc7yChsOkVV4Q1C4uVg77rzwIDAQAB",
   "description": "Change the speed of any HTML5 video (0.1x – 16x) with keyboard shortcuts. Remembers your favorite speed.",
-  "permissions": ["storage"],
-  "content_scripts": [{
-    "matches": ["<all_urls>"],
-    "js": ["content.js"],
-    "run_at": "document_start",
-    "all_frames": true,
-    "match_about_blank": true
-  }],
-  "action": { "default_popup": "popup/popup.html", "default_icon": { "16": "icons/16.png", "32": "icons/32.png", "48": "icons/48.png" } },
-  "icons": { "16": "icons/16.png", "32": "icons/32.png", "48": "icons/48.png", "128": "icons/128.png" }
+  "permissions": [
+    "storage"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "run_at": "document_start",
+      "all_frames": true,
+      "match_about_blank": true
+    }
+  ],
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "icons/16.png",
+      "32": "icons/32.png",
+      "48": "icons/48.png"
+    }
+  },
+  "icons": {
+    "16": "icons/16.png",
+    "32": "icons/32.png",
+    "48": "icons/48.png",
+    "128": "icons/128.png"
+  }
 }

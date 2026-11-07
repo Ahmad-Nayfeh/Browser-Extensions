@@ -2,13 +2,41 @@
   "manifest_version": 3,
   "name": "Snap – Full Page Screenshot & Editor",
   "version": "1.0.0",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuUPJY4GNhUnhFMuRcDtgtBKR3YqLjxEcC1xq9t5bwOAxY5le7nSshw259+HCIbG2kS/xtLXfqcwjUbRLT73+hSO3VlyYrd2DOhkeqJzTD4RfEHcUd07waQt42hKcs76au7kreuKE5Z2n4Uh2PChO+anmZiSPt1u6KCNEXFNCDtMIFsapN73qKmOicbb/ZW7uFZdSvS2LcsxIOX+pZ1ss2lpl5O69jfRPGKjPen1HgTt13qV8PDI0/v6SG6sImuocqXmlU5O0i7mYEcim46dyWbEj2J5ooh6wQYKkAx5rGK/SMWTjOH+KqcohgPEBjglRZBq9ooNIJ0JQVbMRxukdiQIDAQAB",
   "description": "Capture the visible area or the whole page, then crop, draw, highlight, blur and export to PNG, JPG or PDF. All free, all local.",
-  "permissions": ["activeTab", "debugger"],
-  "background": { "service_worker": "background.js" },
-  "commands": {
-    "full": { "suggested_key": { "default": "Alt+Shift+S" }, "description": "Capture the full page" },
-    "visible": { "suggested_key": { "default": "Alt+Shift+V" }, "description": "Capture the visible area" }
+  "permissions": [
+    "activeTab",
+    "debugger"
+  ],
+  "background": {
+    "service_worker": "background.js"
   },
-  "action": { "default_popup": "popup/popup.html", "default_icon": { "16": "icons/16.png", "32": "icons/32.png", "48": "icons/48.png" } },
-  "icons": { "16": "icons/16.png", "32": "icons/32.png", "48": "icons/48.png", "128": "icons/128.png" }
+  "commands": {
+    "full": {
+      "suggested_key": {
+        "default": "Alt+Shift+S"
+      },
+      "description": "Capture the full page"
+    },
+    "visible": {
+      "suggested_key": {
+        "default": "Alt+Shift+V"
+      },
+      "description": "Capture the visible area"
+    }
+  },
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "icons/16.png",
+      "32": "icons/32.png",
+      "48": "icons/48.png"
+    }
+  },
+  "icons": {
+    "16": "icons/16.png",
+    "32": "icons/32.png",
+    "48": "icons/48.png",
+    "128": "icons/128.png"
+  }
 }

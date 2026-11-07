@@ -1,0 +1,42 @@
+{
+  "manifest_version": 3,
+  "name": "Why? – Remember Why You Opened Each Tab",
+  "version": "1.0.0",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAq+EjS/T7KhRpbKXYYFydKQxclxtYd8lqf92MqPJGkCh/XuVL9QVzhQhPEcF9JC6QiF4UgmmIHDpekdurKX/vXUVzb44VqpNbIw+TbY2QuDjuXVd20z4hoXn3jjgSqpTOGbQPLzrm4sTTOk/7ZRn+xWVa7P5ku6nUxcdj7wo6R9oaRd0H1YjV8HsKQL3sdMaQBrOvfhcE7p1f9O8hQVkAZ1+5dCvLahJs0ww3LIfYN/MkYHE431Ej0tQ7pg8jKcOEEFLsfu1MNRQbyFVTlrFQ3gcI1XuxelStuoZtSmEJwBf8uEzcJecHS12TwffHzfUfIlKIC7abQEFgMf85ysoI3QIDAQAB",
+  "description": "Write a few words about why you open a tab. When you come back to it later, it reminds you – and lets you close it if you're done.",
+  "minimum_chrome_version": "121",
+  "permissions": [
+    "tabs",
+    "storage",
+    "scripting",
+    "favicon"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "commands": {
+    "ask": {
+      "suggested_key": {
+        "default": "Alt+Shift+W"
+      },
+      "description": "Write why this tab is open"
+    }
+  },
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "icons/16.png",
+      "32": "icons/32.png",
+      "48": "icons/48.png"
+    }
+  },
+  "icons": {
+    "16": "icons/16.png",
+    "32": "icons/32.png",
+    "48": "icons/48.png",
+    "128": "icons/128.png"
+  }
+}

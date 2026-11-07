@@ -2,15 +2,46 @@
   "manifest_version": 3,
   "name": "Reel – Screen Recorder",
   "version": "1.0.0",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxvjIUtq58EUy3r8TXWBkfKeXd2idfmi5NMFuDOqmLgSKiEff167Uyc9zBySoHiUQ24kWg2qWd+NnwrwETIXvU7FPgyTSSBYuIKVlT2qaCuONvLKJXkf/4F2ph6LLOBP7Y/1X9WcWT8DgZ6lfpOjw/19JFyO/s+bsOBWuUrqCqkmjDmWyb1/HXCY1e1qyZYYEFoQb7m9arixMkJvE2gsAo91UNZr1Qc7h4WSDFo/lb5PoogeO0eXQj6qE6el+XYgvjNhU5fh6yl4UkktUD49+g8ovxgS4g0FP72YV2re1lgpOcrah2XvbBMUxPRpnVNbY9BJJOeLCqwI61uSfjmk3lwIDAQAB",
   "description": "Record your whole screen, a window or a tab – with microphone, camera bubble, drawing tools and trimming. No limits, no account, saved on your computer.",
   "minimum_chrome_version": "121",
-  "permissions": ["storage", "scripting", "activeTab"],
-  "host_permissions": ["<all_urls>"],
-  "background": { "service_worker": "background.js" },
-  "commands": {
-    "_execute_action": { "suggested_key": { "default": "Alt+Shift+R" }, "description": "Open the recorder / stop recording" },
-    "draw": { "suggested_key": { "default": "Alt+Shift+A" }, "description": "Draw on the current page" }
+  "permissions": [
+    "storage",
+    "scripting",
+    "activeTab"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "background.js"
   },
-  "action": { "default_title": "Reel – Screen Recorder", "default_icon": { "16": "icons/16.png", "32": "icons/32.png", "48": "icons/48.png" } },
-  "icons": { "16": "icons/16.png", "32": "icons/32.png", "48": "icons/48.png", "128": "icons/128.png" }
+  "commands": {
+    "_execute_action": {
+      "suggested_key": {
+        "default": "Alt+Shift+R"
+      },
+      "description": "Open the recorder / stop recording"
+    },
+    "draw": {
+      "suggested_key": {
+        "default": "Alt+Shift+A"
+      },
+      "description": "Draw on the current page"
+    }
+  },
+  "action": {
+    "default_title": "Reel – Screen Recorder",
+    "default_icon": {
+      "16": "icons/16.png",
+      "32": "icons/32.png",
+      "48": "icons/48.png"
+    }
+  },
+  "icons": {
+    "16": "icons/16.png",
+    "32": "icons/32.png",
+    "48": "icons/48.png",
+    "128": "icons/128.png"
+  }
 }
