@@ -1,0 +1,98 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Reel – Screen Recorder</title>
+<link rel="stylesheet" href="ui.css">
+<link rel="stylesheet" href="recorder.css">
+</head>
+<body class="page">
+
+  <!-- 1. settings -->
+  <section id="setup" class="stack">
+    <h1>Reel – Screen Recorder</h1>
+    <p class="muted">Click <b>Start</b>, then choose <b>Entire screen</b>, a <b>Window</b> (any app) or a <b>Chrome tab</b>. You can minimize Chrome while recording.</p>
+
+    <div class="grid">
+      <div class="card stack">
+        <h2>Video</h2>
+        <div class="row"><span>Quality</span>
+          <select id="quality"><option value="720">720p</option><option value="1080">1080p</option><option value="1440">1440p</option><option value="0">Original size</option></select></div>
+        <div class="row"><span>Frames per second</span>
+          <select id="fps"><option>15</option><option>30</option><option>60</option></select></div>
+        <label class="row"><span>Record only part of the screen</span><input type="checkbox" id="area"></label>
+        <label class="row"><span>3-second countdown</span><input type="checkbox" id="countdown"></label>
+      </div>
+      <div class="card stack">
+        <h2>Sound &amp; camera</h2>
+        <label class="row"><span>Computer / tab sound</span><input type="checkbox" id="sysAudio"></label>
+        <label class="row"><span>Microphone</span><input type="checkbox" id="mic"></label>
+        <select id="micId"><option value="">Default microphone</option></select>
+        <label class="row"><span>Camera bubble</span><input type="checkbox" id="cam"></label>
+        <select id="camId"><option value="">Default camera</option></select>
+        <div class="row"><span>Bubble</span>
+          <span><select id="camPos" style="width:auto"><option value="br">Bottom right</option><option value="bl">Bottom left</option><option value="tr">Top right</option><option value="tl">Top left</option></select>
+          <select id="camSize" style="width:auto"><option value="0.18">Small</option><option value="0.25">Medium</option><option value="0.33">Large</option></select></span></div>
+      </div>
+    </div>
+
+    <button class="primary big-btn" id="start">● Start recording</button>
+    <div class="muted small" id="setupMsg"></div>
+    <div id="recover" hidden class="card row"><span>Your last recording is still saved.</span><button id="recoverBtn">Open it</button></div>
+
+    <h2>Shortcuts</h2>
+    <div class="muted small">
+      <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>R</kbd> open recorder / stop recording ·
+      <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>A</kbd> draw on the current web page ·
+      change them at <code>chrome://extensions/shortcuts</code>
+    </div>
+  </section>
+
+  <!-- 2. choose an area -->
+  <section id="areaView" class="stack" hidden>
+    <h1>Drag to choose the area to record</h1>
+    <div class="preview" id="previewBox"><video id="preview" muted autoplay playsinline></video><div id="areaSel" hidden></div></div>
+    <div class="row"><span class="muted" id="areaInfo">Whole picture</span>
+      <span><button id="areaCancel">Cancel</button> <button class="primary" id="areaGo">Start recording</button></span></div>
+  </section>
+
+  <!-- 3. recording -->
+  <section id="recView" class="stack center" hidden>
+    <div class="rec-dot"></div>
+    <h1 id="recTime">00:00</h1>
+    <p class="muted" id="recInfo">Recording… you can switch to any app or minimize Chrome.</p>
+    <div class="row" style="justify-content:center;gap:8px">
+      <button id="pauseBtn">Pause</button>
+      <button id="drawBtn">Draw on page</button>
+      <button id="micBtn">Mute mic</button>
+      <button class="primary" id="stopBtn">■ Stop</button>
+    </div>
+  </section>
+
+  <!-- 4. result -->
+  <section id="editView" class="stack" hidden>
+    <div class="row"><h1>Your recording</h1><span class="muted" id="editInfo"></span></div>
+    <video id="result" controls playsinline></video>
+    <div class="card stack">
+      <h2>Trim (cut the start / end)</h2>
+      <div class="trim">
+        <input type="range" id="trimStart" min="0" max="100" step="0.1" value="0">
+        <input type="range" id="trimEnd" min="0" max="100" step="0.1" value="100">
+      </div>
+      <div class="row">
+        <span><button id="setStart">Start = here</button> <button id="setEnd">End = here</button> <button id="playSel">▶ Play selection</button></span>
+        <b id="trimInfo"></b>
+      </div>
+    </div>
+    <div class="row">
+      <span><button class="primary" id="saveBtn">Save video</button> <span class="muted small" id="saveMsg"></span></span>
+      <span><button id="newBtn">New recording</button> <button class="danger" id="discardBtn">Delete</button></span>
+    </div>
+    <progress id="progress" max="1" value="0" hidden></progress>
+  </section>
+
+  <script src="chunks.js"></script>
+  <script src="webm-duration.js"></script>
+  <script src="recorder.js"></script>
+</body>
+</html>

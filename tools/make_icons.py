@@ -15,6 +15,10 @@ ICONS = {
     "08-dark-mode": ("#1f2937", "D"),
     "09-cookie-dismiss": ("#b45309", "C"),
     "10-read-later": ("#4f46e5", "R"),
+    "11-screen-recorder": ("#dc2626", "●"),
+    "12-tab-reasons": ("#0d9488", "?"),
+    "13-word-learner": ("#9333ea", "Aa"),
+    "14-copy-markdown": ("#334155", "M↓"),
 }
 FONT_CANDIDATES = [
     "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",

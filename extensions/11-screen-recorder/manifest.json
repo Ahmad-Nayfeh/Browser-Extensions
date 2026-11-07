@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "Reel – Screen Recorder",
+  "version": "1.0.0",
+  "description": "Record your whole screen, a window or a tab – with microphone, camera bubble, drawing tools and trimming. No limits, no account, saved on your computer.",
+  "minimum_chrome_version": "121",
+  "permissions": ["storage", "scripting", "activeTab"],
+  "host_permissions": ["<all_urls>"],
+  "background": { "service_worker": "background.js" },
+  "commands": {
+    "_execute_action": { "suggested_key": { "default": "Alt+Shift+R" }, "description": "Open the recorder / stop recording" },
+    "draw": { "suggested_key": { "default": "Alt+Shift+A" }, "description": "Draw on the current page" }
+  },
+  "action": { "default_title": "Reel – Screen Recorder", "default_icon": { "16": "icons/16.png", "32": "icons/32.png", "48": "icons/48.png" } },
+  "icons": { "16": "icons/16.png", "32": "icons/32.png", "48": "icons/48.png", "128": "icons/128.png" }
+}

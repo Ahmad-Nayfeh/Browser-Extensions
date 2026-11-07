@@ -1,0 +1,20 @@
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 640px) { .grid { grid-template-columns: 1fr; } }
+.grid h2 { margin-top: 0; }
+select { width: 100%; }
+.big-btn { font-size: 16px; padding: 12px; width: 100%; }
+.center { text-align: center; padding-top: 12vh; }
+.rec-dot { width: 18px; height: 18px; border-radius: 50%; background: var(--danger); margin: 0 auto; animation: blink 1.2s infinite; }
+.paused .rec-dot { animation: none; opacity: .4; }
+@keyframes blink { 50% { opacity: .2; } }
+#recTime { font-size: 44px; font-variant-numeric: tabular-nums; }
+.preview { position: relative; user-select: none; cursor: crosshair; }
+.preview video { width: 100%; display: block; border-radius: 8px; background: #000; }
+#areaSel { position: absolute; border: 2px dashed #fff; box-shadow: 0 0 0 9999px rgba(0,0,0,.55); pointer-events: none; }
+#result { width: 100%; max-height: 60vh; background: #000; border-radius: 8px; }
+.trim { position: relative; height: 28px; }
+.trim input { position: absolute; inset: 0; width: 100%; pointer-events: none; background: none; -webkit-appearance: none; appearance: none; }
+.trim input::-webkit-slider-runnable-track { height: 6px; background: var(--line); border-radius: 3px; }
+.trim input + input::-webkit-slider-runnable-track { background: transparent; }
+.trim input::-webkit-slider-thumb { pointer-events: auto; -webkit-appearance: none; width: 16px; height: 22px; margin-top: -8px; border-radius: 4px; background: var(--accent); cursor: ew-resize; }
+progress { width: 100%; }
