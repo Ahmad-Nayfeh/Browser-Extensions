@@ -61,6 +61,7 @@ TYPE_MAP = {
 # options we understand but that don't change the DNR condition
 IGNORED_OPTIONS = {"all"}
 HOST_RE = re.compile(r"^[a-z0-9.-]+$")
+ALLOW_ID_BASE = 900000
 
 
 def fetch(name, offline):
@@ -225,9 +226,15 @@ def build_ruleset(lines, start_id):
             c["requestDomains"] = hosts[i:i + 1000]
             rules.append({"priority": priority, "action": action, "condition": c})
 
-    for i, r in enumerate(rules):
+    # block/redirect rules get ids from start_id, exceptions from ALLOW_ID_BASE,
+    # so the popup can count only real blocks (getMatchedRules has no action field)
+    blocks = [r for r in rules if r["action"]["type"] == "block"]
+    allows = [r for r in rules if r["action"]["type"] != "block"]
+    for i, r in enumerate(blocks):
         r["id"] = start_id + i
-    return rules, generichide, stats
+    for i, r in enumerate(allows):
+        r["id"] = ALLOW_ID_BASE + start_id + i
+    return blocks + allows, generichide, stats
 
 
 # --------------------------------------------------------------------------
@@ -332,7 +339,7 @@ def main():
         next_id = 1
         for name in cfg["network"]:
             rules, gh, stats = build_ruleset(fetch(name, offline), next_id)
-            next_id += len(rules)
+            next_id += sum(1 for r in rules if r["action"]["type"] == "block")
             generichide |= gh
             with open(os.path.join(out, f"{name}.json"), "w") as f:
                 json.dump(rules, f, separators=(",", ":"))

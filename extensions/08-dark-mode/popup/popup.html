@@ -1,0 +1,21 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><link rel="stylesheet" href="../ui.css"><style>input[type=range]{width:150px}</style></head>
+<body class="popup stack">
+  <div class="row"><h1>Night</h1><label class="switch" title="Dark mode on all sites"><input type="checkbox" id="on"><span></span></label></div>
+  <div class="card stack">
+    <div><b id="host">this site</b></div>
+    <div class="row" id="siteBtns">
+      <button data-v="">Default</button><button data-v="on">Always dark</button><button data-v="off">Never</button>
+    </div>
+    <div class="muted small">Shortcut: <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>D</kbd></div>
+  </div>
+  <div class="card stack">
+    <div class="row"><span>Brightness</span><input type="range" id="brightness" min="50" max="120"></div>
+    <div class="row"><span>Contrast</span><input type="range" id="contrast" min="50" max="150"></div>
+    <div class="row"><span>Warm (sepia)</span><input type="range" id="sepia" min="0" max="60"></div>
+    <label class="row"><span>Skip sites that are already dark</span><input type="checkbox" id="skipDark"></label>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>

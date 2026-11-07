@@ -9,7 +9,15 @@ const send = (msg) => chrome.runtime.sendMessage(msg);
     if (u.protocol.startsWith("http")) host = u.hostname.replace(/^www\./, "");
   } catch {}
 
-  $("count").textContent = (await chrome.action.getBadgeText({ tabId: tab.id })) || "0";
+  // the icon's badge shows the count automatically, but Chrome hides the number
+  // from getBadgeText(); clicking the icon (activeTab) lets us ask for it instead
+  try {
+    const { rulesMatchedInfo } = await chrome.declarativeNetRequest.getMatchedRules({ tabId: tab.id });
+    // ids >= 900000 are exception ("allow") rules – they don't block anything
+    $("count").textContent = rulesMatchedInfo.filter((m) => m.rule.rulesetId !== "_dynamic" && m.rule.ruleId < 900000).length;
+  } catch {
+    $("count").textContent = "–";
+  }
   $("host").textContent = host || "This page can't be filtered";
 
   async function render() {

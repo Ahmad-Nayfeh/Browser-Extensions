@@ -1,0 +1,22 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Restyle – All sites</title><link rel="stylesheet" href="../ui.css"><style>textarea{height:140px}</style></head>
+<body class="page">
+  <h1>Restyle – All sites</h1>
+  <h2>Every site (global CSS)</h2>
+  <div class="card stack">
+    <label class="row"><span>Apply this CSS to every website</span><span class="switch"><input type="checkbox" id="gon"><span></span></span></label>
+    <textarea id="gcss" spellcheck="false" placeholder="/* e.g. a nicer scrollbar everywhere */"></textarea>
+  </div>
+  <h2>Per site</h2>
+  <div id="sites" class="stack"></div>
+  <h2>Backup</h2>
+  <div class="row" style="justify-content:flex-start">
+    <button id="export">Export to file</button>
+    <button id="import">Import from file</button>
+    <input type="file" id="file" accept=".json" hidden>
+  </div>
+  <script src="../common.js"></script>
+  <script src="options.js"></script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Later</title><link rel="stylesheet" href="ui.css">
+<style>
+  body.popup { width: 400px; }
+  #list { max-height: 300px; overflow: auto; }
+  body.page #list { max-height: none; }
+  .tabs { display: flex; gap: 4px; }
+  .tabs button.on { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+  .item { display: grid; grid-template-columns: 16px 1fr auto; gap: 8px; align-items: start; padding: 7px 0; border-bottom: 1px solid var(--line); }
+  .item img { width: 16px; height: 16px; margin-top: 2px; }
+  .item a { color: var(--fg); text-decoration: none; font-weight: 600; word-break: break-word; }
+  .item a:hover { color: var(--accent); }
+  .item .note { white-space: pre-wrap; margin-top: 3px; }
+  .act button { border: 0; background: none; padding: 2px 5px; color: var(--muted); }
+  .act button:hover { color: var(--accent); }
+  #note { height: 70px; }
+</style></head>
+<body class="popup stack">
+  <div class="row"><h1>Later</h1><span class="muted small" id="count"></span></div>
+
+  <div class="card stack" id="here">
+    <div class="row"><b id="hereTitle" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">This page</b>
+      <button class="primary" id="save">Save for later</button></div>
+    <textarea id="note" placeholder="Note about this page (saved automatically)…"></textarea>
+  </div>
+
+  <div class="row">
+    <div class="tabs"><button data-tab="unread" class="on">To read</button><button data-tab="read">Read</button><button data-tab="notes">Notes</button></div>
+  </div>
+  <input type="text" id="q" placeholder="Search titles, links and notes…">
+  <div id="list"></div>
+  <div class="row">
+    <button id="full">Open in a tab</button>
+    <span><button id="export">Export</button> <button id="import">Import</button></span>
+    <input type="file" id="file" accept=".json" hidden>
+  </div>
+  <script src="store.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

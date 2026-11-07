@@ -1,0 +1,17 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><link rel="stylesheet" href="../ui.css"><style>body.popup{width:420px} textarea{height:220px}</style></head>
+<body class="popup stack">
+  <div class="row">
+    <div><h1>Restyle</h1><div class="muted small" id="host">—</div></div>
+    <label class="switch" title="Use this CSS"><input type="checkbox" id="on"><span></span></label>
+  </div>
+  <textarea id="css" spellcheck="false" placeholder="/* CSS for this site – e.g. */&#10;.sidebar { display: none }&#10;body { font-size: 18px }"></textarea>
+  <div class="row">
+    <span class="muted small" id="status">Changes show live and are saved automatically.</span>
+    <button id="all">All sites…</button>
+  </div>
+  <script src="../common.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

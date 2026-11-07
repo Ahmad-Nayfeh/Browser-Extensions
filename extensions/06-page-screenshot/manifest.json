@@ -1,0 +1,14 @@
+{
+  "manifest_version": 3,
+  "name": "Snap – Full Page Screenshot & Editor",
+  "version": "1.0.0",
+  "description": "Capture the visible area or the whole page, then crop, draw, highlight, blur and export to PNG, JPG or PDF. All free, all local.",
+  "permissions": ["activeTab", "debugger"],
+  "background": { "service_worker": "background.js" },
+  "commands": {
+    "full": { "suggested_key": { "default": "Alt+Shift+S" }, "description": "Capture the full page" },
+    "visible": { "suggested_key": { "default": "Alt+Shift+V" }, "description": "Capture the visible area" }
+  },
+  "action": { "default_popup": "popup/popup.html", "default_icon": { "16": "icons/16.png", "32": "icons/32.png", "48": "icons/48.png" } },
+  "icons": { "16": "icons/16.png", "32": "icons/32.png", "48": "icons/48.png", "128": "icons/128.png" }
+}

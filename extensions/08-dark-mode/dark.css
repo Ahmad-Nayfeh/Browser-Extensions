@@ -1,0 +1,19 @@
+/* One filter on the whole page: the GPU inverts the colors, hue-rotate keeps
+   reds red and blues blue. Then media is inverted back so photos look normal. */
+html[data-night] {
+  filter: invert(1) hue-rotate(180deg) brightness(var(--night-b, 1)) contrast(var(--night-c, 1)) sepia(var(--night-s, 0)) !important;
+  background-color: #fff !important;
+  color-scheme: light !important;
+}
+html[data-night] img,
+html[data-night] video,
+html[data-night] svg image,
+html[data-night] [style*="background-image"],
+html[data-night] iframe[src*="youtube"],
+html[data-night] iframe[src*="vimeo"],
+html[data-night] iframe[src*="google.com/maps"] {
+  filter: invert(1) hue-rotate(180deg) !important;
+}
+/* fullscreen video must not be inverted at all */
+html[data-night] :fullscreen,
+html[data-night] :fullscreen video { filter: none !important; }

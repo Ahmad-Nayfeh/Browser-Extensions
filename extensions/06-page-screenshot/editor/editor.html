@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Snap – Editor</title>
+<link rel="stylesheet" href="../ui.css">
+<link rel="stylesheet" href="editor.css">
+</head>
+<body>
+  <header class="bar">
+    <div class="tools" id="tools">
+      <button data-tool="crop" title="Crop (C)">✂ Crop</button>
+      <button data-tool="rect" title="Rectangle (R)">▭ Box</button>
+      <button data-tool="arrow" title="Arrow (A)">➚ Arrow</button>
+      <button data-tool="pen" title="Pen (P)">✎ Pen</button>
+      <button data-tool="text" title="Text (T)">T Text</button>
+      <button data-tool="highlight" title="Highlighter (H)">▮ Highlight</button>
+      <button data-tool="blur" title="Blur / hide private info (B)">▦ Blur</button>
+      <input type="color" id="color" value="#e11d48" title="Color">
+      <select id="width" title="Line width"><option value="2">Thin</option><option value="4" selected>Normal</option><option value="8">Thick</option></select>
+      <button id="undo" title="Undo (Ctrl+Z)">↶ Undo</button>
+    </div>
+    <div class="tools">
+      <button id="copy">Copy</button>
+      <button id="png" class="primary">Save PNG</button>
+      <button id="jpg">JPG</button>
+      <button id="pdf">PDF</button>
+    </div>
+  </header>
+  <div class="info muted small" id="info"></div>
+  <main id="stage"><canvas id="cv"></canvas><div id="sel" hidden></div></main>
+  <script src="../idb.js"></script>
+  <script src="pdf.js"></script>
+  <script src="editor.js"></script>
+</body>
+</html>
