@@ -1,0 +1,50 @@
+/* Shared look for every popup / options page. Copied into each extension
+   by tools/sync_shared.sh – edit this file, then run that script. */
+:root {
+  --bg: #ffffff; --bg2: #f3f4f6; --fg: #111827; --muted: #6b7280;
+  --line: #e5e7eb; --accent: #2563eb; --accent-fg: #ffffff; --danger: #dc2626; --ok: #16a34a;
+  color-scheme: light dark;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #18181b; --bg2: #27272a; --fg: #f4f4f5; --muted: #a1a1aa; --line: #3f3f46; --accent: #60a5fa; --accent-fg: #0b1220; }
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; } /* or .row / .card styles would show hidden things */
+body { margin: 0; font: 13px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--fg); }
+body.popup { width: 320px; padding: 14px; }
+body.page { max-width: 760px; margin: 0 auto; padding: 28px 20px; }
+h1 { font-size: 15px; margin: 0 0 2px; }
+h2 { font-size: 13px; margin: 18px 0 8px; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+.page h1 { font-size: 20px; }
+.muted { color: var(--muted); }
+.small { font-size: 12px; }
+.row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.stack > * + * { margin-top: 8px; }
+.card { background: var(--bg2); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
+button, .btn {
+  font: inherit; border: 1px solid var(--line); background: var(--bg2); color: var(--fg);
+  border-radius: 8px; padding: 7px 10px; cursor: pointer; text-decoration: none; display: inline-block;
+}
+button:hover { border-color: var(--accent); }
+button.primary { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+button.danger { color: var(--danger); }
+button.wide { width: 100%; }
+button:disabled { opacity: .5; cursor: default; }
+input[type=text], input[type=number], input[type=url], textarea, select {
+  font: inherit; width: 100%; padding: 7px 9px; border-radius: 8px; border: 1px solid var(--line);
+  background: var(--bg); color: var(--fg);
+}
+textarea { font-family: ui-monospace, Consolas, monospace; font-size: 12px; resize: vertical; }
+input[type=number] { width: 80px; }
+ul.list { list-style: none; margin: 0; padding: 0; }
+ul.list li { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--line); word-break: break-all; }
+ul.list li:last-child { border-bottom: 0; }
+.big { font-size: 26px; font-weight: 700; }
+kbd { font: 11px ui-monospace, monospace; border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; padding: 1px 5px; background: var(--bg2); }
+/* switch */
+.switch { position: relative; width: 38px; height: 22px; flex: none; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.switch span { position: absolute; inset: 0; background: var(--line); border-radius: 22px; transition: .15s; cursor: pointer; }
+.switch span::before { content: ""; position: absolute; width: 16px; height: 16px; left: 3px; top: 3px; background: #fff; border-radius: 50%; transition: .15s; }
+.switch input:checked + span { background: var(--accent); }
+.switch input:checked + span::before { transform: translateX(16px); }

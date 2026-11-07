@@ -1,0 +1,14 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Trace – Settings</title><link rel="stylesheet" href="ui.css"></head>
+<body class="page stack">
+  <h1>Trace – Settings</h1>
+  <div class="card stack">
+    <label class="row"><span>Hide <b>everything</b> I type (passwords and card numbers are always hidden)</span><input type="checkbox" id="maskAll"></label>
+    <label class="row"><span>Also record <code>console.log</code> / <code>console.info</code> (errors and warnings are always recorded)</span><input type="checkbox" id="logs"></label>
+    <label class="row"><span>Save an HTML snapshot of every page visited</span><input type="checkbox" id="html"></label>
+  </div>
+  <p class="muted small">How to use: open your site, click the Trace icon (or <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>T</kbd>) – it shows <b>REC</b>. Test everything. Click it again to stop – the report opens.</p>
+  <script src="options.js"></script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+{
+  "manifest_version": 3,
+  "name": "Trace – Test Session Recorder",
+  "version": "1.0.0",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAjiOdElfciIn93xCC//y9ACTD0QDNAJZc1xKv+JDxMmbGyI6B3P89pQ8BQbTCBOfbjYr1eTRbJeNRJ+MBx7tsHlPDEpl/onT9o1WP6EgREBGg2xSokVhBNr0RuCATvGU8yNJNBKRHkSe8zu8ffp7uhdhDSJ4VlxNYHaGexikEQ+kSzvuV9F1XN/uuYfidTWFeMGm3MHSOvkp0sw47Gwl8/gUDWCWJqk1H9C20v87FyX0lH2Ow2eV9KNZkl7Ijw5tUh//ZL34aOV/vahE1rtb792VE1s8mSkPRw+D9jX/XKtQmn2TuZEG5HcCD4FIir4jwbYqCjlmzpyHKtd004Aii+wIDAQAB",
+  "description": "Click to start, test your website, click again to stop. Get one Markdown report with every step you took, every error, failed request and page change – ready to give to Claude.",
+  "minimum_chrome_version": "121",
+  "permissions": [
+    "tabs",
+    "scripting",
+    "storage",
+    "webNavigation",
+    "unlimitedStorage"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "commands": {
+    "_execute_action": {
+      "suggested_key": {
+        "default": "Alt+Shift+T"
+      },
+      "description": "Start / stop recording"
+    }
+  },
+  "action": {
+    "default_title": "Trace – click to start recording",
+    "default_icon": {
+      "16": "icons/16.png",
+      "32": "icons/32.png",
+      "48": "icons/48.png"
+    }
+  },
+  "options_page": "options.html",
+  "icons": {
+    "16": "icons/16.png",
+    "32": "icons/32.png",
+    "48": "icons/48.png",
+    "128": "icons/128.png"
+  }
+}

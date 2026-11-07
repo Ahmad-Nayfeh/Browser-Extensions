@@ -1,0 +1,15 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Trace report</title><link rel="stylesheet" href="ui.css"><style>body.page{max-width:1000px} textarea{height:72vh;font-size:12px}</style></head>
+<body class="page stack">
+  <div class="row"><h1 id="title">Test report</h1><span class="muted small" id="stats"></span></div>
+  <div class="row" style="justify-content:flex-start;gap:8px">
+    <button class="primary" id="dl">Download .md</button>
+    <button id="copy">Copy</button>
+    <span class="muted small">Give this file to Claude and ask: “Find the bugs in this test session and tell me how to fix them.”</span>
+  </div>
+  <textarea id="md" readonly spellcheck="false"></textarea>
+  <script src="idb.js"></script>
+  <script src="report.js"></script>
+</body>
+</html>

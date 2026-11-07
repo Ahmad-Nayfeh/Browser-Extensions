@@ -1,0 +1,16 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><link rel="stylesheet" href="../ui.css"></head>
+<body class="popup stack">
+  <h1>Blueprint</h1>
+  <div class="muted small">Exports everything about this page's front-end into one Markdown file you can give to Claude.</div>
+  <div class="card stack">
+    <label class="row"><span>Include the full CSS</span><input type="checkbox" id="css"></label>
+    <label class="row"><span>Include the HTML skeleton</span><input type="checkbox" id="html"></label>
+    <label class="row"><span>Full-page screenshot</span><input type="checkbox" id="screenshot"></label>
+  </div>
+  <button class="primary wide" id="go">Analyze this page</button>
+  <div class="muted small" id="msg">Tip: scroll down the page once first, so images that load late are included.</div>
+  <script src="popup.js"></script>
+</body>
+</html>

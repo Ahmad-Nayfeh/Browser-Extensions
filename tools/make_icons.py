@@ -19,6 +19,8 @@ ICONS = {
     "12-tab-reasons": ("#0d9488", "?"),
     "13-word-learner": ("#9333ea", "Aa"),
     "14-copy-markdown": ("#334155", "M↓"),
+    "15-test-recorder": ("#be123c", "T"),
+    "16-site-blueprint": ("#0369a1", "B"),
 }
 FONT_CANDIDATES = [
     "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",

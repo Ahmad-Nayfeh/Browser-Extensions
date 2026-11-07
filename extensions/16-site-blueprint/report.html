@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Blueprint report</title><link rel="stylesheet" href="ui.css">
+<style>
+  body.page { max-width: 1100px; }
+  .grid { display: grid; grid-template-columns: 1fr 260px; gap: 16px; align-items: start; }
+  @media (max-width: 760px) { .grid { grid-template-columns: 1fr; } }
+  textarea { height: 70vh; font-size: 12px; }
+  .shot { max-height: 70vh; overflow: auto; border: 1px solid var(--line); border-radius: 8px; }
+  .shot img { width: 100%; display: block; }
+</style></head>
+<body class="page stack">
+  <div class="row"><h1 id="title">Blueprint</h1><span class="muted small" id="stats"></span></div>
+  <div class="row" style="justify-content:flex-start;gap:8px">
+    <button class="primary" id="dlMd">Download .md</button>
+    <button id="dlPng">Download screenshot</button>
+    <button id="copy">Copy Markdown</button>
+    <span class="muted small" id="note"></span>
+  </div>
+  <p class="muted small">Give Claude both files (the .md and the screenshot) and ask, for example: “Restyle my site to match this design.”</p>
+  <div class="grid">
+    <textarea id="md" readonly spellcheck="false"></textarea>
+    <div class="shot" id="shotBox"><img id="shot" alt="Screenshot"></div>
+  </div>
+  <script src="idb.js"></script>
+  <script src="report.js"></script>
+</body>
+</html>
