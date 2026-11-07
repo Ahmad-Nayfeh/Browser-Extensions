@@ -26,9 +26,10 @@ module.exports = [
         t.equal(await v.evaluate(() => `${cv.width}x${cv.height}`), "800x600", "visible area = window size");
         const ed = await editor("full");
         t.equal(await ed.evaluate(() => `${cv.width}x${cv.height}`), "800x3040", "full page = whole page height");
-        const px = (y) => ed.evaluate((yy) => [...ctx.getImageData(5, yy, 1, 1).data].slice(0, 3).join(), y);
-        t.equal(await px(10), "60,60,60", "sticky header at the top");
-        t.ok((await px(620)) !== "60,60,60", "sticky header not repeated further down");
+        // brightness of one pixel (exact colors differ a little between machines' color settings)
+        const light = (y) => ed.evaluate((yy) => { const [r, g, b] = ctx.getImageData(5, yy, 1, 1).data; return Math.round(0.299 * r + 0.587 * g + 0.114 * b); }, y);
+        t.ok((await light(10)) < 100, "dark sticky header at the top");
+        t.ok((await light(620)) > 150, "sticky header not repeated further down (light row there)");
         const box = await ed.locator("#cv").boundingBox();
         const drag = async (x1, y1, x2, y2) => { await ed.mouse.move(box.x + x1, box.y + y1); await ed.mouse.down(); await ed.mouse.move(box.x + x2, box.y + y2, { steps: 5 }); await ed.mouse.up(); };
         await drag(20, 20, 120, 80);
