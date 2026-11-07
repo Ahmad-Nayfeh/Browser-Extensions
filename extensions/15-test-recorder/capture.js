@@ -134,12 +134,15 @@
     send({ type: "key", key: k, target: describe(e.target) });
     afterAction();
   }
-  let scrollTimer = null;
+  let scrollTimer = null, lastScroll = 0;
   function onScroll() {
     clearTimeout(scrollTimer);
     scrollTimer = setTimeout(() => {
       const h = document.documentElement.scrollHeight - innerHeight;
-      send({ type: "scroll", y: Math.round(scrollY), percent: h > 0 ? Math.round((scrollY / h) * 100) : 0 });
+      const y = Math.round(scrollY);
+      if (Math.abs(y - lastScroll) < 50) return; // same place as before (pages reset to the top)
+      lastScroll = y;
+      send({ type: "scroll", y, percent: h > 0 ? Math.round((scrollY / h) * 100) : 0 });
     }, 700);
   }
   let resizeTimer = null;
@@ -171,6 +174,32 @@
     }
     return 1; // page default: white
   }
+  // is the point inside every scroll/overflow box around the element? (if not, it is
+  // simply scrolled out of view inside that box – normal, not a bug)
+  function visibleInAncestors(el, x, y) {
+    for (let a = el.parentElement; a && a !== document.body; a = a.parentElement) {
+      const s = getComputedStyle(a);
+      if (/(auto|scroll|hidden|clip)/.test(s.overflowX + s.overflowY)) {
+        const r = a.getBoundingClientRect();
+        if (x < r.left || x > r.right || y < r.top || y > r.bottom) return false;
+      }
+    }
+    return true;
+  }
+  // text hidden on purpose: screen-reader-only labels, "line-clamp" previews ending in "…"
+  function cutOnPurpose(el, s) {
+    const r = el.getBoundingClientRect();
+    if (r.width <= 2 || r.height <= 2 || /sr-only|visually-hidden|screen-reader/.test(el.className)) return true;
+    if (s.clip !== "auto" && s.clip !== "" || s.clipPath !== "none") return true;
+    if (s.webkitLineClamp && s.webkitLineClamp !== "none") return true;
+    for (let a = el; a && a !== document.body; a = a.parentElement) {
+      const as = getComputedStyle(a);
+      if (as.textOverflow === "ellipsis" || (as.webkitLineClamp && as.webkitLineClamp !== "none")) return true;
+    }
+    return false;
+  }
+  const uniq = (list) => [...new Set(list)];
+
   function visualIssues() {
     const out = [];
     const W = document.documentElement.clientWidth;
@@ -192,33 +221,35 @@
       if (r.width < 6 || r.height < 6 || r.top < 0 || r.bottom > innerHeight || r.left < 0 || r.right > W) continue;
       const s = getComputedStyle(el);
       if (s.visibility === "hidden" || s.pointerEvents === "none" || +s.opacity === 0) continue;
-      const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+      const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+      if (!visibleInAncestors(el, cx, cy)) continue;
+      const hit = document.elementFromPoint(cx, cy);
       if (hit && hit !== el && !el.contains(hit) && !hit.contains(el) && !(el.labels && [...el.labels].some((l) => l.contains(hit)))) covered.push(`${selector(el)} "${clip(el.innerText || el.value || el.getAttribute("aria-label"), 30)}" is under ${selector(hit)}`);
     }
-    if (covered.length) out.push({ kind: "covered", text: "Clickable element(s) covered by another element", els: covered });
+    if (covered.length) out.push({ kind: "covered", text: "Clickable element(s) covered by another element", els: uniq(covered) });
     // 4. text that is cut off
     const cut = [];
     for (const el of all) {
       if (cut.length >= 5) break;
       if (!textInside(el)) continue;
       const s = getComputedStyle(el);
-      if (s.textOverflow === "ellipsis" || !/hidden|clip/.test(s.overflowX + s.overflowY)) continue;
+      if (!/hidden|clip/.test(s.overflowX + s.overflowY) || cutOnPurpose(el, s)) continue;
       if (el.scrollWidth > el.clientWidth + 2 || el.scrollHeight > el.clientHeight + 2) cut.push(`${selector(el)} "${clip(el.innerText, 50)}"`);
     }
-    if (cut.length) out.push({ kind: "clipped", text: "Text cut off (doesn't fit its box)", els: cut });
+    if (cut.length) out.push({ kind: "clipped", text: "Text cut off (doesn't fit its box)", els: uniq(cut) });
     // 5. text that is hard to read (contrast below 3:1)
     const low = [];
     for (const el of all) {
       if (low.length >= 5) break;
       if (!textInside(el)) continue;
       const s = getComputedStyle(el);
-      if (s.visibility === "hidden" || +s.opacity < 0.5 || el.getBoundingClientRect().width === 0) continue;
+      if (s.visibility === "hidden" || +s.opacity < 0.5 || el.getBoundingClientRect().width <= 2) continue;
       const fg = luminance(s.color), bg = bgLum(el);
       if (fg === null || bg === null) continue;
       const ratio = (Math.max(fg, bg) + 0.05) / (Math.min(fg, bg) + 0.05);
       if (ratio < 3) low.push(`${selector(el)} "${clip(el.innerText, 40)}" contrast ${ratio.toFixed(1)}:1`);
     }
-    if (low.length) out.push({ kind: "contrast", text: "Hard-to-read text (low contrast)", els: low });
+    if (low.length) out.push({ kind: "contrast", text: "Hard-to-read text (low contrast)", els: uniq(low) });
     // 6. buttons/links with no text or label
     const empty = [...document.querySelectorAll("button, a[href]")].filter((b) => b.getBoundingClientRect().width > 0 && !(b.innerText.trim() || b.getAttribute("aria-label") || b.title || b.querySelector("img[alt], svg title")));
     if (empty.length) out.push({ kind: "unlabeled", text: `${empty.length} button(s)/link(s) without any text or label`, els: empty.slice(0, 5).map(selector) });

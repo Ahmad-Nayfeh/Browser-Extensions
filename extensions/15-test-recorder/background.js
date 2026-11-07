@@ -21,6 +21,7 @@ async function injectNow(tabId) {
 
 async function start(tab) {
   await TraceDB.clear();
+  await chrome.storage.session.remove("lastShot");
   const opts = await chrome.storage.sync.get(DEF_OPTS);
   await setRec({ tabs: [tab.id], start: Date.now(), opts });
   await TraceDB.add({ t: Date.now(), type: "start", url: tab.url, title: tab.title, tab: tab.id, ua: navigator.userAgent, opts });
@@ -98,6 +99,11 @@ async function takeShot(tabId) {
   const c = new OffscreenCanvas(Math.round(bmp.width * scale), Math.round(bmp.height * scale));
   c.getContext("2d").drawImage(bmp, 0, 0, c.width, c.height);
   const blob = await c.convertToBlob({ type: "image/jpeg", quality: 0.7 });
+  // the screen didn't change since the last picture? don't keep a copy
+  const hash = [...new Uint8Array(await crypto.subtle.digest("SHA-1", await blob.arrayBuffer()))].join(",");
+  const { lastShot } = await chrome.storage.session.get("lastShot");
+  if (hash === lastShot) return;
+  await chrome.storage.session.set({ lastShot: hash });
   await TraceDB.add({ t: Date.now(), type: "shot", tab: tabId, blob, url: tab.url });
 }
 

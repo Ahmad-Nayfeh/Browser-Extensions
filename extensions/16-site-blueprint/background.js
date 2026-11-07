@@ -231,7 +231,9 @@ async function analyze(tab, opts, progress) {
     if (session) await session.start(opts.api);
     const first = await onePage(startUrl, 1, opts.scope === "site" ? "?" : 1);
     if (opts.scope === "site") {
-      queue = first.links.slice(0, Math.max(0, opts.maxPages - 1));
+      // one page per template: /quotes/123 and /quotes/456 share a layout – analysing both wastes a page
+      const seen = new Set([template(startUrl)]);
+      queue = first.links.filter((u) => { const k = template(u); if (seen.has(k)) return false; seen.add(k); return true; }).slice(0, Math.max(0, opts.maxPages - 1));
       const total = queue.length + 1;
       for (let i = 0; i < queue.length; i++) {
         try { await onePage(queue[i], i + 2, total); }
@@ -266,6 +268,11 @@ async function analyze(tab, opts, progress) {
     const cut = md.indexOf("\n## Appendix A");
     md = cut > 0 ? md.slice(0, cut) + "\n\n" + api + "\n" + md.slice(cut) : md + "\n\n" + api + "\n";
   }
+
+  // personal data never leaves in the file: e-mail addresses and phone numbers are hidden everywhere
+  md = md.replace(/[\w.+-]+@[\w-]+\.[\w.-]+/g, (m) => (/\.(png|jpe?g|svg|webp|gif|css|js)$/i.test(m) ? m : "•••@•••"))
+    .replace(/(?<![\w#.-])\+?\d[\d\s-]{8,}\d(?![\w.%-])/g, (m) => (m.replace(/\D/g, "").length >= 9 && /[\s-]|^\+/.test(m) ? "•••-phone-•••" : m))
+    .replace(/(?<![\w.-])05\d{8}(?![\w.-])/g, "•••-phone-•••"); // Saudi mobile numbers written without spaces
 
   const id = String(Date.now());
   await BlueprintDB.clear(); // keep only the latest report

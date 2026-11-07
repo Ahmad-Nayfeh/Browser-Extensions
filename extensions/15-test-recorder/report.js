@@ -50,7 +50,7 @@ function build(events) {
 | Pages / screens visited | ${new Set(events.filter((e) => ["start", "nav", "route"].includes(e.type)).map((e) => e.url)).size} |
 | JavaScript errors | ${errors.length} |
 | Console errors / warnings | ${consoleErr.length} / ${consoleWarn.length} |
-| Server requests (fetch/XHR) | ${requests.length} – **${failed.length} failed**, ${slow.length} slow (> 3 s) |
+| Server requests (fetch/XHR) | ${requests.length} – **${failed.length} failed**, ${slow.length} slow (> 3 s), average ${requests.length ? Math.round(requests.reduce((n, e) => n + e.ms, 0) / requests.length) : 0} ms |
 | Files that failed to load | ${resErr.length} |
 | Error messages shown on screen | ${shownErrors.length} |
 | Visual problems detected | ${events.filter((e) => e.type === "visual").reduce((n, e) => n + e.issues.length, 0)} |
@@ -70,6 +70,16 @@ function build(events) {
   group(shownErrors, (e) => e.appeared.filter((a) => a.error).map((a) => a.text).join("|"), (e, n, s) => `- ⚠️ **Error message shown on screen** (step ${s}): ${e.appeared.filter((a) => a.error).map((a) => `"${clip(a.text, 200)}"`).join(", ")}`);
   group(slow, (e) => `${e.method} ${e.url.split("?")[0]}`, (e, n, s) => `- 🐢 **Slow request** (step ${s}): ${e.method} ${code(shortUrl(e.url, origin))} took ${(e.ms / 1000).toFixed(1)} s`);
   group(events.filter((e) => (e.type === "click") && e.target && e.target.disabled), (e) => e.target.sel, (e, n, s) => `- ℹ️ **Clicked a disabled element** (step ${s}${n > 1 ? `, ${n}×` : ""}): ${what(e.target)}`);
+  // the same request sent again within 3 s = wasted work (often a component that loads twice)
+  const dup = new Map();
+  for (let i = 0; i < requests.length; i++) {
+    const a = requests[i];
+    for (let j = i + 1; j < requests.length && requests[j].t - a.t < 3000; j++) {
+      const b = requests[j];
+      if (b.method === a.method && b.url === a.url) { const k = `${a.method} ${a.url}`; const g = dup.get(k) || { e: a, n: 1 }; g.n++; dup.set(k, g); break; }
+    }
+  }
+  for (const [, g] of dup) problems.push(`- 🔁 **Duplicate request** (step ${stepOf.get(g.e)}): ${g.e.method} ${code(shortUrl(g.e.url, origin))} was sent ${g.n}× within 3 seconds – the same data is loaded more than once (slower page, more server load)`);
   for (const e of events.filter((x) => x.type === "visual")) {
     for (const i of e.issues) problems.push(`- 🎨 **Visual: ${i.text}** (step ${stepOf.get(e)}, ${shortUrl(e.url, origin)})${i.els.length ? "\n" + i.els.map((x) => `  - ${code(x)}`).join("\n") : ""}`);
   }
