@@ -1,0 +1,15 @@
+{
+  "manifest_version": 3,
+  "name": "Clean Tube – YouTube Distraction Remover",
+  "version": "1.0.0",
+  "description": "Hide YouTube Shorts, recommendations, comments, end-screen cards and more. You choose what to hide.",
+  "permissions": ["storage"],
+  "content_scripts": [{
+    "matches": ["*://www.youtube.com/*", "*://m.youtube.com/*"],
+    "js": ["options.js", "content.js"],
+    "css": ["clean.css"],
+    "run_at": "document_start"
+  }],
+  "action": { "default_popup": "popup/popup.html", "default_icon": { "16": "icons/16.png", "32": "icons/32.png", "48": "icons/48.png" } },
+  "icons": { "16": "icons/16.png", "32": "icons/32.png", "48": "icons/48.png", "128": "icons/128.png" }
+}

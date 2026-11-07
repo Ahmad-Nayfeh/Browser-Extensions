@@ -1,0 +1,26 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><link rel="stylesheet" href="../ui.css">
+<style>
+  .presets { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+  .keys { display: grid; grid-template-columns: 1fr 44px; gap: 6px 10px; align-items: center; }
+  .keys input { text-align: center; padding: 4px; }
+  input[type=range] { width: 100%; }
+</style></head>
+<body class="popup stack">
+  <div class="row"><h1>Speedy</h1><div class="big" id="cur">—</div></div>
+  <div class="muted small" id="note"></div>
+  <input type="range" id="range" min="0.25" max="4" step="0.05">
+  <div class="presets" id="presets"></div>
+  <h2>Shortcuts (click a box and press a key)</h2>
+  <div class="keys" id="keys"></div>
+  <h2>Settings</h2>
+  <div class="card stack">
+    <div class="row"><span>Speed step</span><input type="number" id="step" min="0.05" max="1" step="0.05"></div>
+    <div class="row"><span>Skip seconds</span><input type="number" id="seek" min="1" max="120"></div>
+    <div class="row"><span>Favorite speed</span><input type="number" id="favorite" min="0.1" max="16" step="0.05"></div>
+    <label class="row"><span>Remember speed for every video</span><input type="checkbox" id="remember"></label>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><link rel="stylesheet" href="../ui.css"></head>
+<body class="popup stack">
+  <h1>Focus</h1>
+  <div class="card stack" id="addBox">
+    <div><b id="host">this site</b> <span class="muted small" id="status"></span></div>
+    <div class="row">
+      <button class="primary" id="block" style="flex:1">Block always</button>
+      <button id="limit">Limit to</button>
+      <input type="number" id="mins" value="15" min="1" max="600" style="width:58px"><span class="small">min/day</span>
+    </div>
+  </div>
+  <h2>My sites</h2>
+  <ul class="list" id="list"></ul>
+  <p class="muted small">Daily limits reset at midnight. Time counts only while the site is the active tab and you are not idle.</p>
+  <script src="popup.js"></script>
+</body>
+</html>

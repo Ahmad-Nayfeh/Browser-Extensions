@@ -1,0 +1,21 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><link rel="stylesheet" href="../ui.css"></head>
+<body class="popup stack">
+  <div class="row">
+    <div><h1>Shield</h1><div class="muted small" id="host">—</div></div>
+    <div style="text-align:right"><div class="big" id="count">0</div><div class="muted small">blocked on this page</div></div>
+  </div>
+  <div class="card row">
+    <div><b>Block on this site</b><div class="muted small" id="siteNote"></div></div>
+    <label class="switch"><input type="checkbox" id="site"><span></span></label>
+  </div>
+  <button class="wide" id="pick">Hide an element on this page…</button>
+  <div class="row">
+    <button id="pause" style="flex:1">Pause everywhere</button>
+    <button id="opts">Settings</button>
+  </div>
+  <div class="muted small" id="reloadHint" hidden>Reload the page to apply.</div>
+  <script src="popup.js"></script>
+</body>
+</html>

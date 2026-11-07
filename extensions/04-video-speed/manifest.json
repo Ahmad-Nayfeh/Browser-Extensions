@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "Speedy – Video Speed Controller",
+  "version": "1.0.0",
+  "description": "Change the speed of any HTML5 video (0.1x – 16x) with keyboard shortcuts. Remembers your favorite speed.",
+  "permissions": ["storage"],
+  "content_scripts": [{
+    "matches": ["<all_urls>"],
+    "js": ["content.js"],
+    "run_at": "document_start",
+    "all_frames": true,
+    "match_about_blank": true
+  }],
+  "action": { "default_popup": "popup/popup.html", "default_icon": { "16": "icons/16.png", "32": "icons/32.png", "48": "icons/48.png" } },
+  "icons": { "16": "icons/16.png", "32": "icons/32.png", "48": "icons/48.png", "128": "icons/128.png" }
+}

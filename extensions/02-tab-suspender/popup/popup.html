@@ -1,0 +1,20 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><link rel="stylesheet" href="../ui.css"></head>
+<body class="popup stack">
+  <div class="row">
+    <div><h1>Sleepy Tabs</h1><div class="muted small" id="stats">—</div></div>
+    <label class="switch" title="Auto-sleep on/off"><input type="checkbox" id="enabled"><span></span></label>
+  </div>
+  <div class="card stack">
+    <div class="row"><span>Sleep tabs unused for</span><span><input type="number" id="minutes" min="1" max="1440"> min</span></div>
+    <label class="row"><span>Never sleep pinned tabs</span><input type="checkbox" id="skipPinned"></label>
+    <label class="row"><span>Never sleep tabs playing sound</span><input type="checkbox" id="skipAudible"></label>
+    <label class="row"><span>Never sleep <b id="host">this site</b></span><input type="checkbox" id="never"></label>
+  </div>
+  <button class="wide" id="sleepNow">Sleep all other tabs now</button>
+  <button class="wide" id="save">Save &amp; close all tabs in this window</button>
+  <button class="wide" id="list">Open saved tabs</button>
+  <script src="popup.js"></script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+{
+  "manifest_version": 3,
+  "name": "Focus – Site Blocker & Daily Limits",
+  "version": "1.0.0",
+  "description": "Block distracting sites completely, or give them a daily time budget. Time is only counted while the site is actually in front of you.",
+  "minimum_chrome_version": "121",
+  "permissions": ["declarativeNetRequest", "storage", "tabs", "alarms", "idle"],
+  "host_permissions": ["<all_urls>"],
+  "background": { "service_worker": "background.js" },
+  "web_accessible_resources": [{ "resources": ["blocked/blocked.html"], "matches": ["<all_urls>"] }],
+  "action": { "default_popup": "popup/popup.html", "default_icon": { "16": "icons/16.png", "32": "icons/32.png", "48": "icons/48.png" } },
+  "icons": { "16": "icons/16.png", "32": "icons/32.png", "48": "icons/48.png", "128": "icons/128.png" }
+}

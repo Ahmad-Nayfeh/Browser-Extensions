@@ -1,0 +1,51 @@
+/* ---------- Shorts ---------- */
+html[data-ct-shorts] ytd-reel-shelf-renderer,
+html[data-ct-shorts] ytd-rich-shelf-renderer[is-shorts],
+html[data-ct-shorts] ytd-rich-section-renderer:has(ytd-rich-shelf-renderer[is-shorts]),
+html[data-ct-shorts] ytd-rich-item-renderer:has(a[href^="/shorts/"]),
+html[data-ct-shorts] ytd-video-renderer:has(a[href^="/shorts/"]),
+html[data-ct-shorts] ytd-grid-video-renderer:has(a[href^="/shorts/"]),
+html[data-ct-shorts] grid-shelf-view-model:has(a[href^="/shorts/"]),
+html[data-ct-shorts] ytd-guide-entry-renderer:has(a[title="Shorts"]),
+html[data-ct-shorts] ytd-mini-guide-entry-renderer[aria-label="Shorts"],
+html[data-ct-shorts] yt-tab-shape[tab-title="Shorts"],
+html[data-ct-shorts] yt-chip-cloud-chip-renderer:has([title="Shorts"]),
+html[data-ct-shorts] ytm-reel-shelf-renderer,
+html[data-ct-shorts] ytm-shorts-lockup-view-model,
+/* ---------- Home feed ---------- */
+html[data-ct-home] ytd-browse[page-subtype="home"] #primary,
+html[data-ct-home] ytd-browse[page-subtype="home"] #chips-wrapper,
+/* ---------- Recommendations beside the player ---------- */
+html[data-ct-related] ytd-watch-flexy #related,
+html[data-ct-related] ytd-watch-next-secondary-results-renderer,
+/* ---------- End screen ---------- */
+html[data-ct-endcards] .ytp-ce-element,
+html[data-ct-endcards] .ytp-endscreen-content,
+html[data-ct-endcards] .videowall-endscreen,
+html[data-ct-endcards] .ytp-fullscreen-grid,
+html[data-ct-endcards] .ytp-cards-teaser,
+/* ---------- Comments ---------- */
+html[data-ct-comments] ytd-watch-flexy #comments,
+html[data-ct-comments] ytd-comments,
+html[data-ct-comments] ytd-engagement-panel-section-list-renderer[target-id="engagement-panel-comments-section"],
+/* ---------- Live chat ---------- */
+html[data-ct-chat] ytd-watch-flexy #chat,
+html[data-ct-chat] ytd-live-chat-frame,
+html[data-ct-chat] #chat-container,
+/* ---------- Mixes ---------- */
+html[data-ct-mixes] ytd-rich-item-renderer:has(a[href*="start_radio=1"]),
+html[data-ct-mixes] ytd-radio-renderer,
+html[data-ct-mixes] ytd-compact-radio-renderer,
+html[data-ct-mixes] yt-lockup-view-model:has(a[href*="start_radio=1"]),
+/* ---------- News / trending / explore ---------- */
+html[data-ct-news] ytd-rich-section-renderer:has(ytd-rich-shelf-renderer:not([is-shorts])),
+html[data-ct-news] ytd-guide-section-renderer:has(a[href="/feed/trending"]),
+html[data-ct-news] ytd-guide-section-renderer:has(a[href^="/feed/explore"]) {
+  display: none !important;
+}
+/* when the side recommendations are hidden, let the player use the space */
+html[data-ct-related] ytd-watch-flexy:not([theater]) #secondary:not(:has(#chat:not([collapsed]))) { display: none !important; }
+html[data-ct-home] ytd-browse[page-subtype="home"]::after {
+  content: "Home feed hidden by Clean Tube – use search or your subscriptions.";
+  display: block; padding: 80px 24px; text-align: center; font: 16px Roboto, sans-serif; color: var(--yt-spec-text-secondary, #888);
+}

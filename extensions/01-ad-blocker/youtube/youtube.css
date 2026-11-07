@@ -1,0 +1,34 @@
+/* Ad slots in feeds, search, sidebar and above the player */
+ytd-ad-slot-renderer,
+ytd-in-feed-ad-layout-renderer,
+ytd-display-ad-renderer,
+ytd-promoted-sparkles-web-renderer,
+ytd-promoted-video-renderer,
+ytd-compact-promoted-video-renderer,
+ytd-banner-promo-renderer,
+ytd-statement-banner-renderer,
+ytd-primetime-promo-renderer,
+ytd-brand-video-singleton-renderer,
+ytd-search-pyv-renderer,
+ytd-merch-shelf-renderer,
+ytd-engagement-panel-section-list-renderer[target-id="engagement-panel-ads"],
+ytd-rich-item-renderer:has(> #content > ytd-ad-slot-renderer),
+ytd-rich-section-renderer:has(ytd-statement-banner-renderer),
+#masthead-ad,
+#player-ads,
+#panels > ytd-ads-engagement-panel-content-renderer,
+.ytp-ad-overlay-container,
+.ytp-ad-overlay-slot,
+.ytp-featured-product,
+.ytd-player-legacy-desktop-watch-ads-renderer,
+/* the "ad blockers are not allowed" dialog */
+ytd-enforcement-message-view-model,
+tp-yt-paper-dialog:has(ytd-enforcement-message-view-model) {
+  display: none !important;
+}
+/* while an ad plays, hide its picture and controls */
+.ad-showing video,
+.ad-showing .ytp-ad-player-overlay,
+.ad-showing .ytp-ad-player-overlay-layout {
+  opacity: 0 !important;
+}
