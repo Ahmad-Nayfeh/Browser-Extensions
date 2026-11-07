@@ -18,8 +18,8 @@
 | 12 | [Why?](extensions/12-tab-reasons) | يتذكر لماذا فتحت كل تبويب، ويذكّرك |
 | 13 | [Lexi](extensions/13-word-learner) | ترجمة الكلمات الإنجليزية بالعربي + مراجعة ذكية لحفظها |
 | 14 | [Copy as Markdown](extensions/14-copy-markdown) | ينسخ أي صفحة كـ Markdown، والمعادلات تبقى بصيغة LaTeX |
-| 15 | [Trace](extensions/15-test-recorder) | يسجّل جلسة اختبار موقعك (خطواتك، الأخطاء، الطلبات الفاشلة) في تقرير لـ Claude |
-| 16 | [Blueprint](extensions/16-site-blueprint) | يصدّر تصميم أي موقع بالكامل (الهيكل، الألوان، المكونات، CSS…) في ملف لـ Claude |
+| 15 | [Trace](extensions/15-test-recorder) | يسجّل جلسة اختبار موقعك (خطواتك، الأخطاء، الطلبات الفاشلة، صورة بعد كل خطوة، فحص بصري) في ملف لـ Claude |
+| 16 | [Blueprint](extensions/16-site-blueprint) | يصدّر تصميم أي موقع أو الموقع كاملاً (الهيكل، الألوان، المكونات، CSS، بيانات الخادم، صور الصفحات) في ملف لـ Claude |
 
 في مجلد كل إضافة ملف `README.md` يشرحها بالتفصيل.
 

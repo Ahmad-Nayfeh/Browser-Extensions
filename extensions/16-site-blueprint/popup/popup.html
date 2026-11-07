@@ -3,14 +3,20 @@
 <head><meta charset="utf-8"><link rel="stylesheet" href="../ui.css"></head>
 <body class="popup stack">
   <h1>Blueprint</h1>
-  <div class="muted small">Exports everything about this page's front-end into one Markdown file you can give to Claude.</div>
+  <div class="muted small">Exports everything about this site's front-end into one file you can give to Claude.</div>
   <div class="card stack">
+    <label class="row"><span><input type="radio" name="scope" value="page"> This page only</span></label>
+    <label class="row"><span><input type="radio" name="scope" value="site"> The whole site, up to</span><span><input type="number" id="maxPages" min="2" max="50"> pages</span></label>
+  </div>
+  <div class="card stack">
+    <label class="row"><span>Record the data the site gets from its server (API)</span><input type="checkbox" id="api"></label>
+    <label class="row"><span>Scroll through each page first (loads late images)</span><input type="checkbox" id="scroll"></label>
+    <label class="row"><span>Full-page screenshots</span><input type="checkbox" id="screenshot"></label>
     <label class="row"><span>Include the full CSS</span><input type="checkbox" id="css"></label>
     <label class="row"><span>Include the HTML skeleton</span><input type="checkbox" id="html"></label>
-    <label class="row"><span>Full-page screenshot</span><input type="checkbox" id="screenshot"></label>
   </div>
-  <button class="primary wide" id="go">Analyze this page</button>
-  <div class="muted small" id="msg">Tip: scroll down the page once first, so images that load late are included.</div>
+  <button class="primary wide" id="go">Analyze</button>
+  <div class="muted small" id="msg">The page reloads once to record its data requests. For the whole site, Blueprint opens each page in this tab by itself – just wait.</div>
   <script src="popup.js"></script>
 </body>
 </html>

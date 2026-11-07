@@ -4,12 +4,14 @@
 <body class="page stack">
   <div class="row"><h1 id="title">Test report</h1><span class="muted small" id="stats"></span></div>
   <div class="row" style="justify-content:flex-start;gap:8px">
-    <button class="primary" id="dl">Download .md</button>
+    <button class="primary" id="zip">Download for Claude (.zip)</button>
+    <button id="dl">Report only (.md)</button>
     <button id="copy">Copy</button>
-    <span class="muted small">Give this file to Claude and ask: “Find the bugs in this test session and tell me how to fix them.”</span>
+    <span class="muted small">Give the .zip (report + screenshots) to Claude and ask: “Find the bugs in this test session and tell me how to fix them.”</span>
   </div>
   <textarea id="md" readonly spellcheck="false"></textarea>
   <script src="idb.js"></script>
+  <script src="zip.js"></script>
   <script src="report.js"></script>
 </body>
 </html>

@@ -1,4 +1,4 @@
-const DEF = { maskAll: false, logs: false, html: true };
+const DEF = { maskAll: false, logs: false, html: true, shots: true, visual: true };
 chrome.storage.sync.get(DEF).then((o) => {
   for (const k of Object.keys(DEF)) {
     const el = document.getElementById(k);

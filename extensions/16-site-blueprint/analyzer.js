@@ -467,10 +467,31 @@
     return out + (cut ? "\n<!-- … cut here: the page is very large -->\n" : "");
   }
 
+  // ---------- internal links (for analysing the whole site) ----------
+  function siteLinks() {
+    const here = location.origin + location.pathname;
+    const score = new Map();
+    for (const a of document.links) {
+      let u; try { u = new URL(a.href); } catch { continue; }
+      if (u.origin !== location.origin || !/^https?:$/.test(u.protocol)) continue;
+      if (/\.(pdf|zip|rar|7z|jpe?g|png|gif|webp|svg|mp4|mp3|docx?|xlsx?|pptx?|exe|dmg)$/i.test(u.pathname)) continue;
+      if (/log-?out|sign-?out|logoff|cart\/(add|remove)|delete|unsubscribe/i.test(u.pathname + u.search)) continue; // never click these
+      const key = u.origin + u.pathname.replace(/\/$/, "");
+      if (key === here.replace(/\/$/, "")) continue;
+      let sc = 1;
+      if (a.closest("nav, header, [role=navigation]")) sc += 4; // main menu pages first
+      if (a.closest("main, article")) sc += 2;
+      if (a.closest("footer")) sc += 1;
+      score.set(key, (score.get(key) || 0) + sc);
+    }
+    return [...score.entries()].sort((a, b) => b[1] - a[1] || a[0].length - b[0].length).map(([u]) => u);
+  }
+
   // ---------- markdown report ----------
   function table(rows, head) { return rows.length ? `| ${head.join(" | ")} |\n|${head.map(() => "---").join("|")}|\n` + rows.map((r) => `| ${r.join(" | ")} |`).join("\n") : "_none_"; }
 
   function run(fetched, tech, opts = {}) {
+    if (opts.mode === "page") return runPage(fetched, opts);
     const t0 = performance.now();
     const P = parseSheets(fetched);
     const { els, total } = sweep();
@@ -567,7 +588,30 @@ ${table([...P.media.entries()].sort((a, b) => b[1].rules - a[1].rules).slice(0, 
     }
     if (opts.html !== false) md.push(`## Appendix B — HTML skeleton\nScripts removed, long texts shortened, SVG contents hidden.\n${fence("html", skeleton())}`);
 
-    return { md: md.join("\n\n") + "\n", stats: { ms: round(performance.now() - t0), elements: els.length, rules: P.ruleCount, sheets: P.sheetCount } };
+    return { md: md.join("\n\n") + "\n", stats: { ms: round(performance.now() - t0), elements: els.length, rules: P.ruleCount, sheets: P.sheetCount }, links: siteLinks(), sheets: P.fullCss.map((c) => (c.href === "(inline <style>)" ? "inline:" + c.text.length + ":" + c.text.slice(0, 200) : c.href)), height: document.documentElement.scrollHeight };
+  }
+
+  // another page of the same site: the design system is already known from the
+  // first page, so only what is specific to this page is exported
+  function runPage(fetched, opts) {
+    const t0 = performance.now();
+    const P = parseSheets(fetched);
+    const { els } = sweep();
+    const known = new Set(opts.knownSheets || []);
+    const md = [];
+    md.push(`### Structure\n${structure()}`);
+    md.push(`### Components on this page\n${components(P.rules).replace(/^### /gm, "#### ")}`);
+    md.push(`### Assets\n${assets(P).replace(/^### /gm, "#### ")}`);
+    md.push(`### Behaviour\n${behaviour().replace(/^### /gm, "#### ")}`);
+    md.push(`### Content\n${content().replace(/^### /gm, "#### ")}`);
+    const fresh = P.fullCss.filter((c) => c.text.trim() && !known.has(c.href) && c.href !== "(inline <style>)");
+    // inline <style> blocks repeated on every page are exported once
+    const inline = P.fullCss.filter((c) => c.href === "(inline <style>)" && c.text.trim() && !known.has("inline:" + c.text.length + ":" + c.text.slice(0, 200)));
+    if (opts.css !== false && (fresh.length || inline.length)) {
+      md.push(`### CSS used only on this page\n${fence("css", [...fresh, ...inline].map((c) => `/* ===== ${c.href} ===== */\n${c.text.slice(0, 300000)}`).join("\n\n"))}`);
+    }
+    if (opts.html !== false) md.push(`### HTML skeleton\n${fence("html", skeleton(150000))}`);
+    return { md: md.join("\n\n") + "\n", stats: { ms: round(performance.now() - t0), elements: els.length, rules: P.ruleCount, sheets: P.sheetCount }, links: siteLinks(), sheets: P.fullCss.map((c) => (c.href === "(inline <style>)" ? "inline:" + c.text.length + ":" + c.text.slice(0, 200) : c.href)), height: document.documentElement.scrollHeight };
   }
 
   window.__bp = { sheetsToFetch, run };

@@ -10,6 +10,8 @@ const fmtT = (ms) => { const s = Math.max(0, Math.round(ms / 1000)); return `${S
 const what = (d) => (d ? `${d.tag}${d.inputType ? `[${d.inputType}]` : ""}${d.text ? ` "${clip(d.text, 60)}"` : ""} (${code(d.sel)})${d.disabled ? " ⚠️ disabled" : ""}` : "?");
 
 function build(events) {
+  const shots = events.filter((e) => e.type === "shot");
+  const shotName = new Map(shots.map((e, i) => [e, `screenshots/${String(i + 1).padStart(3, "0")}.jpg`]));
   const startEv = events.find((e) => e.type === "start") || events[0];
   const t0 = startEv ? startEv.t : Date.now();
   const end = (events.find((e) => e.type === "stop") || events[events.length - 1] || {}).t || t0;
@@ -36,7 +38,7 @@ function build(events) {
 
   const md = [];
   md.push(`# Test session report – ${origin || "website"}`);
-  md.push(`> **For Claude:** I tested my website by hand while this recorder was running. Below is everything that happened, in order: what I did (clicks, typing, navigation), what the page did in response (requests to the server, changes on screen, messages shown) and every error. Please (1) list the bugs and problems you find, (2) explain the most likely cause of each, using the step numbers, and (3) tell me what to change in my source code (I'll share the relevant files if needed). Passwords and other secret fields were hidden by the recorder.`);
+  md.push(`> **For Claude:** I tested my website by hand while this recorder was running. Below is everything that happened, in order: what I did (clicks, typing, navigation), what the page did in response (requests to the server, changes on screen, messages shown) and every error. Please (1) list the bugs and problems you find, (2) explain the most likely cause of each, using the step numbers, and (3) tell me what to change in my source code (I'll share the relevant files if needed). Passwords and other secret fields were hidden by the recorder.${shots.length ? ` A screenshot was taken after each step: they are in the \`screenshots/\` folder next to this file and are referenced in the timeline (📷) – look at them to spot visual problems.` : ""}`);
 
   md.push(`## Summary
 | | |
@@ -50,7 +52,9 @@ function build(events) {
 | Console errors / warnings | ${consoleErr.length} / ${consoleWarn.length} |
 | Server requests (fetch/XHR) | ${requests.length} – **${failed.length} failed**, ${slow.length} slow (> 3 s) |
 | Files that failed to load | ${resErr.length} |
-| Error messages shown on screen | ${shownErrors.length} |`);
+| Error messages shown on screen | ${shownErrors.length} |
+| Visual problems detected | ${events.filter((e) => e.type === "visual").reduce((n, e) => n + e.issues.length, 0)} |
+| Screenshots | ${shots.length} |`);
 
   // ---- problems first ----
   const problems = [];
@@ -66,6 +70,9 @@ function build(events) {
   group(shownErrors, (e) => e.appeared.filter((a) => a.error).map((a) => a.text).join("|"), (e, n, s) => `- ⚠️ **Error message shown on screen** (step ${s}): ${e.appeared.filter((a) => a.error).map((a) => `"${clip(a.text, 200)}"`).join(", ")}`);
   group(slow, (e) => `${e.method} ${e.url.split("?")[0]}`, (e, n, s) => `- 🐢 **Slow request** (step ${s}): ${e.method} ${code(shortUrl(e.url, origin))} took ${(e.ms / 1000).toFixed(1)} s`);
   group(events.filter((e) => (e.type === "click") && e.target && e.target.disabled), (e) => e.target.sel, (e, n, s) => `- ℹ️ **Clicked a disabled element** (step ${s}${n > 1 ? `, ${n}×` : ""}): ${what(e.target)}`);
+  for (const e of events.filter((x) => x.type === "visual")) {
+    for (const i of e.issues) problems.push(`- 🎨 **Visual: ${i.text}** (step ${stepOf.get(e)}, ${shortUrl(e.url, origin)})${i.els.length ? "\n" + i.els.map((x) => `  - ${code(x)}`).join("\n") : ""}`);
+  }
   md.push(`## Problems found\n${problems.join("\n") || "No errors were detected. (Visual or logic problems you noticed yourself are not visible to the recorder – add them to your message to Claude.)"}`);
 
   // ---- timeline ----
@@ -106,6 +113,8 @@ function build(events) {
       case "new-tab": lines.push(`   ${at} ↳ a new tab was opened from this page (it is recorded too)`); break;
       case "tab-closed": lines.push(`   ${at} ↳ a tab was closed`); break;
       case "stop": lines.push(`   ${at} **Recording stopped**`); break;
+      case "shot": lines.push(`   ${at} ↳ 📷 ${shotName.get(e)}`); break;
+      case "visual": lines.push(`   ${at} ↳ 🎨 visual check: ${e.issues.map((i) => i.text).join("; ")}`); break;
     }
   }
   const MAX = 4000;
@@ -124,7 +133,7 @@ function build(events) {
       md.push(`### ${clip(p.title, 90)} — ${shortUrl(p.url, origin)}\n${p.headings.length ? "Headings: " + p.headings.map((h) => `\`${h}\``).join(" · ") + "\n\n" : ""}${p.html ? "```html\n" + p.html.trim() + "\n```" : ""}`);
     }
   }
-  return { md: md.join("\n\n") + "\n", errors: errors.length + failed.length + consoleErr.length, actions: actions.length, origin, t0 };
+  return { md: md.join("\n\n") + "\n", errors: errors.length + failed.length + consoleErr.length, actions: actions.length, origin, t0, files: shots.map((e) => ({ name: shotName.get(e), data: e.blob })) };
 }
 
 (async () => {
@@ -133,9 +142,12 @@ function build(events) {
   const r = build(events);
   let host = "site"; try { host = new URL(r.origin).hostname; } catch {}
   $("title").textContent = `Test report – ${host}`;
-  $("stats").textContent = `${r.actions} actions · ${r.errors} problems · ${events.length} events`;
+  $("stats").textContent = `${r.actions} actions · ${r.errors} errors · ${r.files.length} screenshots · ${events.length} events`;
   $("md").value = r.md;
-  const name = `test-report-${host}-${new Date(r.t0).toISOString().slice(0, 16).replace(/[:T]/g, "-")}.md`;
-  $("dl").onclick = () => { const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([r.md], { type: "text/markdown" })); a.download = name; a.click(); };
+  const base = `test-report-${host}-${new Date(r.t0).toISOString().slice(0, 16).replace(/[:T]/g, "-")}`;
+  const save = (blob, name) => { const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = name; a.click(); };
+  $("zip").textContent = `Download for Claude (.zip, ${r.files.length} screenshots)`;
+  $("zip").onclick = async () => save(await ZipWriter.makeZip([{ name: "report.md", data: r.md }, ...r.files]), base + ".zip");
+  $("dl").onclick = () => save(new Blob([r.md], { type: "text/markdown" }), base + ".md");
   $("copy").onclick = async () => { await navigator.clipboard.writeText(r.md); $("copy").textContent = "Copied ✓"; setTimeout(() => ($("copy").textContent = "Copy"), 1500); };
 })();

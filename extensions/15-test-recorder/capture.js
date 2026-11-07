@@ -86,6 +86,7 @@
       windowTimer = null;
       if (added || removed || appeared.length) send({ type: "dom", added, removed, appeared });
       added = removed = 0; appeared = [];
+      checkSoon();
     }, 1500);
   }
   // big changes nobody clicked for (timers, live updates): summarized every 10 s
@@ -151,6 +152,82 @@
     send(ev);
   }
 
+  // ---------- automatic visual checks ----------
+  // Things that look broken to a human but throw no error.
+  const reported = new Set(); // same problem on the same page is reported once
+  function textInside(el) { for (const c of el.childNodes) if (c.nodeType === 3 && c.textContent.trim()) return true; return false; }
+  function luminance(c) {
+    const m = c.match(/rgba?\(([\d.]+),?\s*([\d.]+),?\s*([\d.]+)(?:\s*[,/]\s*([\d.]+))?/);
+    if (!m || (m[4] !== undefined && +m[4] < 0.5)) return null;
+    const [r, g, b] = [m[1], m[2], m[3]].map((v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; });
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  }
+  function bgLum(el) {
+    for (let e = el; e; e = e.parentElement) {
+      const s = getComputedStyle(e);
+      if (s.backgroundImage !== "none") return null; // text on a picture: can't judge
+      const l = luminance(s.backgroundColor);
+      if (l !== null) return l;
+    }
+    return 1; // page default: white
+  }
+  function visualIssues() {
+    const out = [];
+    const W = document.documentElement.clientWidth;
+    const all = [...document.body.querySelectorAll("*")].slice(0, 5000);
+    // 1. the page is wider than the window
+    if (document.documentElement.scrollWidth > W + 2) {
+      const wide = all.filter((el) => { const r = el.getBoundingClientRect(); return r.width > 0 && r.right > W + 2 && getComputedStyle(el).position !== "fixed"; });
+      const outer = wide.filter((el) => !wide.some((o) => o !== el && o.contains(el)));
+      out.push({ kind: "overflow", text: `Page is wider than the window (${document.documentElement.scrollWidth}px > ${W}px): sideways scrolling`, els: outer.slice(0, 4).map(selector) });
+    }
+    // 2. broken images
+    const broken = [...document.images].filter((i) => i.complete && i.naturalWidth === 0 && (i.currentSrc || i.src) && i.getBoundingClientRect().width > 0);
+    if (broken.length) out.push({ kind: "broken-image", text: `${broken.length} broken image(s)`, els: broken.slice(0, 5).map((i) => clip(i.currentSrc || i.src, 100)) });
+    // 3. buttons/links you can't click because something covers them
+    const covered = [];
+    for (const el of document.querySelectorAll("button, a[href], input:not([type=hidden]), select, textarea, [role=button]")) {
+      if (covered.length >= 5) break;
+      const r = el.getBoundingClientRect();
+      if (r.width < 6 || r.height < 6 || r.top < 0 || r.bottom > innerHeight || r.left < 0 || r.right > W) continue;
+      const s = getComputedStyle(el);
+      if (s.visibility === "hidden" || s.pointerEvents === "none" || +s.opacity === 0) continue;
+      const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+      if (hit && hit !== el && !el.contains(hit) && !hit.contains(el) && !(el.labels && [...el.labels].some((l) => l.contains(hit)))) covered.push(`${selector(el)} "${clip(el.innerText || el.value || el.getAttribute("aria-label"), 30)}" is under ${selector(hit)}`);
+    }
+    if (covered.length) out.push({ kind: "covered", text: "Clickable element(s) covered by another element", els: covered });
+    // 4. text that is cut off
+    const cut = [];
+    for (const el of all) {
+      if (cut.length >= 5) break;
+      if (!textInside(el)) continue;
+      const s = getComputedStyle(el);
+      if (s.textOverflow === "ellipsis" || !/hidden|clip/.test(s.overflowX + s.overflowY)) continue;
+      if (el.scrollWidth > el.clientWidth + 2 || el.scrollHeight > el.clientHeight + 2) cut.push(`${selector(el)} "${clip(el.innerText, 50)}"`);
+    }
+    if (cut.length) out.push({ kind: "clipped", text: "Text cut off (doesn't fit its box)", els: cut });
+    // 5. text that is hard to read (contrast below 3:1)
+    const low = [];
+    for (const el of all) {
+      if (low.length >= 5) break;
+      if (!textInside(el)) continue;
+      const s = getComputedStyle(el);
+      if (s.visibility === "hidden" || +s.opacity < 0.5 || el.getBoundingClientRect().width === 0) continue;
+      const fg = luminance(s.color), bg = bgLum(el);
+      if (fg === null || bg === null) continue;
+      const ratio = (Math.max(fg, bg) + 0.05) / (Math.min(fg, bg) + 0.05);
+      if (ratio < 3) low.push(`${selector(el)} "${clip(el.innerText, 40)}" contrast ${ratio.toFixed(1)}:1`);
+    }
+    if (low.length) out.push({ kind: "contrast", text: "Hard-to-read text (low contrast)", els: low });
+    // 6. buttons/links with no text or label
+    const empty = [...document.querySelectorAll("button, a[href]")].filter((b) => b.getBoundingClientRect().width > 0 && !(b.innerText.trim() || b.getAttribute("aria-label") || b.title || b.querySelector("img[alt], svg title")));
+    if (empty.length) out.push({ kind: "unlabeled", text: `${empty.length} button(s)/link(s) without any text or label`, els: empty.slice(0, 5).map(selector) });
+
+    const fresh = out.filter((i) => { const k = location.href + i.kind + i.els.join(); if (reported.has(k)) return false; reported.add(k); return true; });
+    if (fresh.length) send({ type: "visual", issues: fresh });
+  }
+  const checkSoon = () => { if (opts.visual !== false) setTimeout(() => { try { visualIssues(); } catch {} }, 300); };
+
   // ---------- page snapshot ----------
   const VOID = /^(area|base|br|col|embed|hr|img|input|link|meta|source|track|wbr)$/;
   const KEEP = /^(id|class|href|src|alt|role|type|name|placeholder|for|action|method|value|disabled|required|checked|selected|aria-[a-z]+|data-testid)$/;
@@ -181,6 +258,7 @@
     snapped.add(location.href);
     const headings = [...document.querySelectorAll("h1, h2, h3")].slice(0, 25).map((h) => `${h.localName}: ${clip(h.innerText, 80)}`);
     send({ type: "page", title: document.title, headings, html: opts.html === false ? "" : skeleton(opts.htmlLimit || 60000) });
+    checkSoon();
   }
 
   // ---------- start / stop ----------

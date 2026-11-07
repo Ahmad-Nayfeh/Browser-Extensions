@@ -7,18 +7,24 @@ const $ = (id) => document.getElementById(id);
   $("title").textContent = "Blueprint – " + host;
   $("md").value = r.md;
   const kb = Math.round(new Blob([r.md]).size / 1024);
-  $("stats").textContent = `${kb} KB · ${r.stats.elements} elements · ${r.stats.rules} CSS rules · ${r.stats.sheets} stylesheets · ${r.stats.ms} ms`;
-  const date = new Date().toISOString().slice(0, 10);
-  const save = (href, name) => { const a = document.createElement("a"); a.href = href; a.download = name; a.click(); };
-  $("dlMd").onclick = () => save(URL.createObjectURL(new Blob([r.md], { type: "text/markdown" })), `blueprint-${host}-${date}.md`);
-  if (r.shot && r.shot.png) {
-    $("shot").src = r.shot.png;
-    $("dlPng").onclick = () => save(r.shot.png, `blueprint-${host}-${date}.png`);
-    if (r.shot.cut) $("note").textContent = "The page is very tall – the screenshot shows the first 16 000 px.";
-  } else {
-    $("dlPng").disabled = true;
-    $("shotBox").hidden = true;
-    if (r.shot && r.shot.error) $("note").textContent = "Screenshot failed: " + r.shot.error;
+  $("stats").textContent = `${r.pages} page(s) · ${r.shots.length} screenshot file(s) · ${r.requests} data requests · ${kb} KB`;
+  const base = `blueprint-${host}-${new Date().toISOString().slice(0, 10)}`;
+  const save = (blob, name) => { const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = name; a.click(); };
+  const toBlob = async (dataUrl) => (await fetch(dataUrl)).blob();
+  for (const s of r.shots) {
+    const f = document.createElement("figure");
+    const img = document.createElement("img"); img.src = s.png; img.loading = "lazy";
+    const c = document.createElement("figcaption"); c.textContent = s.name;
+    f.append(img, c); $("shots").append(f);
   }
+  if (!r.shots.length) $("shots").hidden = true;
+  $("zip").onclick = async () => {
+    $("zip").disabled = true;
+    const files = [{ name: "blueprint.md", data: r.md }];
+    for (const s of r.shots) files.push({ name: s.name, data: await toBlob(s.png) });
+    save(await ZipWriter.makeZip(files), base + ".zip");
+    $("zip").disabled = false;
+  };
+  $("dlMd").onclick = () => save(new Blob([r.md], { type: "text/markdown" }), base + ".md");
   $("copy").onclick = async () => { await navigator.clipboard.writeText(r.md); $("copy").textContent = "Copied ✓"; setTimeout(() => ($("copy").textContent = "Copy Markdown"), 1500); };
 })();

@@ -3,7 +3,7 @@ importScripts("idb.js");
 // Trace – click the icon to start, click again to stop.
 // state (survives the worker sleeping): storage.session.rec = { tabs: [ids], start }
 
-const DEF_OPTS = { maskAll: false, logs: false, html: true };
+const DEF_OPTS = { maskAll: false, logs: false, html: true, shots: true, visual: true };
 const getRec = async () => (await chrome.storage.session.get("rec")).rec || null;
 const setRec = (rec) => (rec ? chrome.storage.session.set({ rec }) : chrome.storage.session.remove("rec"));
 
@@ -31,11 +31,13 @@ async function start(tab) {
   ]).catch(() => {});
   await setBadge(true);
   await injectNow(tab.id);
+  scheduleShot(tab.id);
 }
 
 async function stop() {
   const rec = await getRec();
   if (!rec) return;
+  if (shotTimer) { clearTimeout(shotTimer); shotTimer = null; await takeShot(rec.tabs[0]).catch(() => {}); } // the last screen
   await setRec(null);
   await chrome.scripting.unregisterContentScripts({ ids: ["trace-main", "trace-capture"] }).catch(() => {});
   for (const id of rec.tabs) {
@@ -73,8 +75,31 @@ chrome.webNavigation.onCommitted.addListener(async (d) => {
 chrome.webNavigation.onHistoryStateUpdated.addListener(async (d) => {
   if (d.frameId !== 0) return;
   const rec = await getRec();
-  if (rec && rec.tabs.includes(d.tabId)) TraceDB.add({ t: Date.now(), type: "route", url: d.url, tab: d.tabId });
+  if (rec && rec.tabs.includes(d.tabId)) { TraceDB.add({ t: Date.now(), type: "route", url: d.url, tab: d.tabId }); scheduleShot(d.tabId); }
 });
+
+// ---------- a screenshot after each step ----------
+// Taken 1.2 s after you stop acting (so the page has reacted), only while the
+// tested tab is the one on screen. Shrunk to 1280 px wide JPEG to stay small.
+const SHOT_AFTER = new Set(["click", "dblclick", "input", "submit", "key", "page", "nav", "route"]);
+let shotTimer = null;
+function scheduleShot(tabId) {
+  clearTimeout(shotTimer);
+  shotTimer = setTimeout(() => takeShot(tabId).catch(() => {}), 1200);
+}
+async function takeShot(tabId) {
+  const rec = await getRec();
+  if (!rec || !rec.opts.shots || !rec.tabs.includes(tabId)) return;
+  const tab = await chrome.tabs.get(tabId);
+  if (!tab.active) return;
+  const url = await chrome.tabs.captureVisibleTab(tab.windowId, { format: "jpeg", quality: 80 });
+  const bmp = await createImageBitmap(await (await fetch(url)).blob());
+  const scale = Math.min(1, 1280 / bmp.width);
+  const c = new OffscreenCanvas(Math.round(bmp.width * scale), Math.round(bmp.height * scale));
+  c.getContext("2d").drawImage(bmp, 0, 0, c.width, c.height);
+  const blob = await c.convertToBlob({ type: "image/jpeg", quality: 0.7 });
+  await TraceDB.add({ t: Date.now(), type: "shot", tab: tabId, blob, url: tab.url });
+}
 
 chrome.runtime.onMessage.addListener((msg, sender, reply) => {
   (async () => {
@@ -82,7 +107,11 @@ chrome.runtime.onMessage.addListener((msg, sender, reply) => {
     const tabId = sender.tab && sender.tab.id;
     const mine = !!rec && rec.tabs.includes(tabId) && sender.frameId === 0;
     if (msg.type === "trace-hello") reply({ recording: mine, opts: mine ? rec.opts : null });
-    else if (msg.type === "trace" && mine) { await TraceDB.add({ ...msg.ev, tab: tabId }); reply(true); }
+    else if (msg.type === "trace" && mine) {
+      await TraceDB.add({ ...msg.ev, tab: tabId });
+      if (SHOT_AFTER.has(msg.ev.type) || (msg.ev.type === "dom" && msg.ev.appeared && msg.ev.appeared.length)) scheduleShot(tabId);
+      reply(true);
+    }
     else reply(false);
   })();
   return true;
